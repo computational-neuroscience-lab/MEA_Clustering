@@ -1,0 +1,23 @@
+
+function treat_time_array(treated,stim,spk_times,spk_cells,waiting_spk,nlevelfinal,IS,checkerboard) 
+%STIM_TIME_FROM_ARRAY Summary of this function goes here
+%   Detailed explanation goes here %//////Comment
+
+% nlevelfinal between 1 and 3
+
+n_spk = find_stim_time(spk_times,stim,IS);
+
+computableTimes = (n_spk>0);
+
+computableTimes = computableTimes && 
+
+STA_partial(treated,spk_cells(computableTimes),n_spk(computableTimes),IS,checkerboard)
+
+add_spks_bins(treated,spk_cells(computableTimes),n_spk(computableTimes));
+
+not_found = (n_spk == -1);
+%fprintf('not found : %d \n',length(not_found))
+add_elements(waiting_spk,nlevelfinal,spk_cells(not_found),spk_times(not_found));
+
+end
+
