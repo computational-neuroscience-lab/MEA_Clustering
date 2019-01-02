@@ -46,18 +46,18 @@ refFeatures = tracesMat;
 refNPcaComponents = 10;
 
 % recursive classification
-nIterations = 3;
-features = {tracesMat, tracesMat, tracesMat};
-nPcaComponents = [10, 10, 10];
-nMaxBranchings = [16, 12, 8];
+nIterations = 4;
+features = {tracesMat, tracesMat, tracesMat, tracesMat};
+nPcaComponents = [10, 10, 10, 10];
+nMaxBranchings = [2, 25, 10, 10];
 
 % admissibility check
-admissibleMinSize = 3;	% default = 4
-admissibleMaxSTD = 0.15;	% default = 0.25
+admissibleMinSize = 5;	% default = 4
+admissibleMaxSTD = 0.12;	% default = 0.25
 
 % splittability check
-splittableMinSize = 6;	% default = 12
-splittableMinSTD = 0.025;	% default = 0.2
+splittableMinSize = 10;	% default = 12
+splittableMinSTD = 0.04;	% default = 0.2
 
 
 %-----------------------------STRUCTURES---------------------------------%

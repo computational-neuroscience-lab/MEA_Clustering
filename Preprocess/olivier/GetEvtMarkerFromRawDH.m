@@ -1,6 +1,6 @@
 %Script to get the event marker
 
-FileBase = '/Volumes/Elements 1/20180705/DH_NOBCKGR';
+FileBase = '/home/fran_tr/Data/20181018b/raws/CONVERTED';
 
 ElectrodesFile = [FileBase '.raw'];
 StimFile = 'DH_NOBCKGR.mat';

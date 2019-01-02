@@ -21,7 +21,7 @@ fill(x2, inBetween, [0.75, 0.75, 0.75]);
 % Plot Mean
 plot(xs, avgTrace, 'r', 'LineWidth', 3)
 xlim([0, xs(end)]);
-
+ylim([-0.1, +1.1]);
 xlabel('(s)')
 
 if isnan(avgSTD)

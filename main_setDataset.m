@@ -1,9 +1,12 @@
 clear
 
-datasetName = "MEA_ALL_ABC_17ago";
-expId_list = {"170614", "180209", "180705"};
-acceptedLabels = 3;
+% Parameters
+datasetName = "6MEA_AB_22nov";
+exp_path = "/media/fran_tr/Elements/MEA_Experiments/";
+experiments = {"20170614", "20180705", "20180209", "20181017", "20181018a", "20181018b"};
+acceptedLabels = 4; % 5=A, 4=AB, 3=ABC
 
+% Initialization
 indices_list = {};
 features_list = {};
 temporalSTAs = [];
@@ -11,38 +14,40 @@ spatialSTAs = [];
 stas = [];
 psths = [];
 
-for iExp = 1:numel(expId_list)
-    expId = expId_list{iExp};
+for iExp = 1:numel(experiments)
+    expId = experiments{iExp};
     disp(strcat("Experiment #", string(iExp)))
 
     
     %----- PATHS ---------------------------%
 
-    repetitionsMat = strcat("Experiments/", expId, "/Euler/RepetitionTimes.mat");
-    stimMat = strcat("Experiments/", expId, "/Euler/euler.mat");
-    spikesMat = strcat("Experiments/", expId, "/SpikeTimes.mat");
-    staMat = strcat("Experiments/", expId, "/Sta.mat");
-    indicesMat = strcat("Experiments/", expId, "/Indices.mat");
-    tagsMat = strcat("Experiments/", expId, "/Tagged.mat");
+    spikesMat = strcat(exp_path, expId, "/processed/SpikeTimes.mat");
+    indicesMat = strcat(exp_path, expId, "/processed/Indices.mat");
+    tagsMat = strcat(exp_path, expId, "/processed/Tags.mat");
 
+    repetitionsMat = strcat(exp_path, expId, "/processed/Euler/Euler_RepetitionTimes.mat");
+    stimMat = strcat(exp_path, expId, "/processed/Euler/Euler_Stim.mat");
+    staMat = strcat(exp_path, expId, "/processed/STA/Sta.mat");
 
     %----- LOADs -------------------------------%
 
     load(repetitionsMat, "rep_begin_time_20khz", "rep_end_time_20khz")
-    load(stimMat, "euler", "freqEuler")
+    load(stimMat, "euler", "euler_sampler_rate")
     load(spikesMat, "SpikeTimes")
     load(staMat, "STAs")
     
     try
         load(indicesMat, "indices")
     catch
+        disp("INFO: INDICES NOT FOUND. USING ALL CELLS")
         indices = 1:numel(SpikeTimes);
     end
     
     try
-        load(tagsMat, "Tagged")
+        load(tagsMat, "Tags")
     catch
-        Tagged = ones(numel(SpikeTimes), 1) * 5;
+        disp("WARNING: TAGGES NOT FOUND. RATING ALL CELLS AS [A]")
+        Tags = ones(numel(SpikeTimes), 1) * 5;
     end
     
     
@@ -62,7 +67,7 @@ for iExp = 1:numel(expId_list)
     
     disp('  PSTH')
     [PSTH, XPSTH, MeanPSTH] = doPSTH(SpikeTimes, rep_begin_time_20khz, params.binSize, params.nTBins, params.meaRate, 1:numel(SpikeTimes));
-    [chunkPSTH, chunkEuler] = extractEulerChunks(PSTH, 1/params.tBin, euler, freqEuler);
+    [chunkPSTH, chunkEuler] = extractEulerChunks(PSTH, 1/params.tBin, euler, euler_sampler_rate);
     
     disp('  STA')
     [temporal, spatial, indicesSTA] = decomposeSTA(STAs);
@@ -78,7 +83,7 @@ for iExp = 1:numel(expId_list)
     %----- VALID CELLS SELECTION ---------------------------%
     
     disp('  GROUPING')
-    indicesTAGS = find(Tagged>=acceptedLabels).';
+    indicesTAGS = find(Tags>=acceptedLabels).';
     indicesPSTH = getValidIndicesPSTH(chunkPSTH);
     indices_1 = intersect(indicesPSTH, indicesSTA);
     indices_2 = intersect(indices, indicesTAGS);
@@ -87,22 +92,28 @@ for iExp = 1:numel(expId_list)
     
     
     %----- DEFINE FEATURES ---------------------------%
-      
-    temporalSTAs = [temporalSTAs; temporal(final_indices, :)];
-    spatialSTAs = [spatialSTAs, spatial(final_indices)];
-    stas = [stas, STAs(final_indices)];
-    
-    psths = [psths;  chunkPSTH(final_indices, :)];
-    
+         
     norm_psth = chunkPSTH(final_indices, :) ./ max(chunkPSTH(final_indices, :), [], 2);
-    norm_tsta = temporal(final_indices, :) ./ max(abs(temporal(final_indices, :)));
+    
+    norm_tsta_baseline = temporal(final_indices, 1:6);
+    norm_tsta = temporal(final_indices, 7:21);
+    norm_tsta = norm_tsta - mean(norm_tsta_baseline, 2);
+    norm_tsta = norm_tsta ./ std(norm_tsta, [], 2);
+    
     norm_areas = ellipseAreas(final_indices) / max(ellipseAreas(final_indices));
     features = [norm_psth, norm_tsta, norm_areas];
     features_list{iExp} = features;
+    
+    temporalSTAs = [temporalSTAs; norm_tsta];
+    spatialSTAs = [spatialSTAs, spatial(final_indices)];
+    stas = [stas, STAs(final_indices)];
+    psths = [psths;  chunkPSTH(final_indices, :)];
+    
+    disp('')
 end
 
-createDataset(datasetName, expId_list, indices_list, features_list);
-save(getDatasetMat(), 'temporalSTAs', 'spatialSTAs', 'stas', 'psths', 'params', '-append')
+createDataset(datasetName, experiments, indices_list, features_list);
+save(getDatasetMat(), 'experiments', 'temporalSTAs', 'spatialSTAs', 'stas', 'psths', 'params', '-append')
 
 % output
 clear

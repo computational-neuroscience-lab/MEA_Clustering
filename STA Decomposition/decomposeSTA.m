@@ -23,8 +23,6 @@ for i=1:length(stas)
             qualityIndices(i) = meanRatio;
 
             temporal(i, :) = tSta;
-            temporal(i, :) = tSta;
-            temporal(i, :) = tSta;
 
             spatial(i).x = xEll;
             spatial(i).y = yEll;

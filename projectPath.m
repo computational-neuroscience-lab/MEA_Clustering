@@ -1,3 +1,3 @@
 function path = projectPath()
-path = '/home/fran_tr/MEA_CLUSTERING';
+path = '/home/fran_tr/Projects/MEA_CLUSTERING';
 
