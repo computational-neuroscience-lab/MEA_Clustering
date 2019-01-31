@@ -15,7 +15,7 @@ for i=1:length(stas)
         [isValid, meanRatio] = validateEllipse(xEll, yEll, staFrame);
 
         % extract temporal
-        [tSta, tSta_in, tSta_out] = extractTemporalSta(stas{i}, xEll, yEll);
+        [tSta, ~, ~] = extractTemporalSta(stas{i}, xEll, yEll);
 
         % return structures
         logical_indices(i) = isValid;

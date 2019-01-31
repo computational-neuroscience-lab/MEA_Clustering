@@ -1,6 +1,7 @@
 function [rep_begin_time_20khz, rep_end_time_20khz] = getCheckerboardRepetitions(stimTimes)
 
-load('checkerboard.mat', 'block_size')
+checkerboard_mat = strcat(stimPath, '/Checkerboard/checkerboard.mat');
+load(checkerboard_mat, 'block_size')
 
 % this works for 20khz sampling 
 rep_begin_time_20khz = stimTimes(block_size+1 : block_size*2 : end);

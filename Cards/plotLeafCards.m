@@ -1,4 +1,8 @@
-function plotLeafCards(class)
+function plotLeafCards(class, experiments)
+
+if ~exist('experiments', 'var')
+    load(getDatasetMat(), 'experiments');
+end
 
 if ~exist('class','var')
     subclasses = getLeafClasses();
@@ -8,7 +12,7 @@ end
 
 if numel(subclasses) > 0
     for class = subclasses
-        plotClassCard(class);
+        plotClassCard(class, experiments);
     end
 end
 

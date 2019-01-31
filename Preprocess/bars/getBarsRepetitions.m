@@ -1,12 +1,7 @@
+function [rep_begin_time_20khz, rep_end_time_20khz] = getBarsRepetitions(barsEvtTime)
 
-% TODO
-
-
-
-
-MovingBars = 89350000:103222000;
-barsEvtTime = EvtTime(and(EvtTime >= MovingBars(1), EvtTime <= MovingBars(end)));
-load('Bars/bars.mat', 'directions', 'centers')
+bars_mat = strcat(stimPath, '/Bars/bars.mat');
+load(bars_mat, 'directions', 'centers')
 
 % bars
 rep_begin_time_20khz = [];

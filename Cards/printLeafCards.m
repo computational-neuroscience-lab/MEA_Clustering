@@ -1,4 +1,8 @@
-function printLeafCards(expId, class)
+function printLeafCards(class, experiments)
+
+if ~exist('experiments', 'var')
+    load(getDatasetMat(), 'experiments');
+end
 
 if ~exist('class','var')
     subclasses = getLeafClasses();
@@ -8,11 +12,7 @@ end
 
 if numel(subclasses) > 0
     for class = subclasses
-        if ~exist('expId','var')
-            plotClassCard(class);
-        else
-            plotClassCard(class, expId);
-        end
+        plotClassCard(class, experiments);
         saveas(gcf, regexprep(class, '\.', '_'),'jpg')
         close;
     end

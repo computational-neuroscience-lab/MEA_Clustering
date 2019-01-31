@@ -1,5 +1,5 @@
 clear
-loadDataset()
+load(getDatasetMat(), 'stas')
 
 nCells = numel(stas);
 

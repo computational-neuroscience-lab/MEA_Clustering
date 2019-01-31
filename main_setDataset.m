@@ -1,14 +1,15 @@
 clear
 
 % Parameters
-datasetName = "6MEA_AB_22nov";
+datasetName = "170614_ABC_26jan";
 exp_path = "/media/fran_tr/Elements/MEA_Experiments/";
-experiments = {"20170614", "20180705", "20180209", "20181017", "20181018a", "20181018b"};
-acceptedLabels = 4; % 5=A, 4=AB, 3=ABC
+experiments = {"20170614"};
+acceptedLabels = 3; % 5=A, 4=AB, 3=ABC
 
 % Initialization
 indices_list = {};
 features_list = {};
+spikes = {};
 temporalSTAs = [];
 spatialSTAs = [];
 stas = [];
@@ -52,22 +53,22 @@ for iExp = 1:numel(experiments)
     
     
     %----- PARAMETERS ----------------------------%
-
+    % TODO: PUT OUT OF THE LOOP THIS PART, GENERALIZE nSTEPS
     % experimental parameters
     params.meaRate = 20000; %Hz
-    params.nSteps = rep_end_time_20khz(1) - rep_begin_time_20khz(1) + (1 * params.meaRate);
 
     % modeling parameters
-    params.tBin = 0.05; % s
-    params.binSize = params.tBin * params.meaRate;
-    params.nTBins = round(params.nSteps / params.binSize);
+    params.psth.nSteps = rep_end_time_20khz(1) - rep_begin_time_20khz(1);
+    params.psth.tBin = 0.05; % s
+    params.psth.binSize = params.psth.tBin * params.meaRate;
+    params.psth.nTBins = round(params.psth.nSteps / params.psth.binSize);
 
     
     %----- PSTH --------------------------------------------%
     
     disp('  PSTH')
-    [PSTH, XPSTH, MeanPSTH] = doPSTH(SpikeTimes, rep_begin_time_20khz, params.binSize, params.nTBins, params.meaRate, 1:numel(SpikeTimes));
-    [chunkPSTH, chunkEuler] = extractEulerChunks(PSTH, 1/params.tBin, euler, euler_sampler_rate);
+    [PSTH, XPSTH, MeanPSTH] = doPSTH(SpikeTimes, rep_begin_time_20khz, params.psth.binSize, params.psth.nTBins, params.meaRate, 1:numel(SpikeTimes));
+    [chunkPSTH, chunkEuler] = extractEulerChunks(PSTH, 1/params.psth.tBin, euler, euler_sampler_rate);
     
     disp('  STA')
     [temporal, spatial, indicesSTA] = decomposeSTA(STAs);
@@ -108,12 +109,13 @@ for iExp = 1:numel(experiments)
     spatialSTAs = [spatialSTAs, spatial(final_indices)];
     stas = [stas, STAs(final_indices)];
     psths = [psths;  chunkPSTH(final_indices, :)];
+    spikes = [spikes, SpikeTimes(final_indices)];
     
     disp('')
 end
 
 createDataset(datasetName, experiments, indices_list, features_list);
-save(getDatasetMat(), 'experiments', 'temporalSTAs', 'spatialSTAs', 'stas', 'psths', 'params', '-append')
+save(getDatasetMat(), 'experiments', 'spikes', 'temporalSTAs', 'spatialSTAs', 'stas', 'psths', 'params', '-append')
 
 % output
 clear

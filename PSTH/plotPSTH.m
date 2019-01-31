@@ -1,7 +1,7 @@
 function avgSTD = plotPSTH(indices)
 
 load(getDatasetMat(), 'psths', 'params')
-tBin = params.tBin;
+tBin = params.psth.tBin;
 
 traces = psths(indices, :);
 traces = traces ./ max(traces, [], 2);

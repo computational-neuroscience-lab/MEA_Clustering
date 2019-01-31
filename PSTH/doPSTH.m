@@ -1,4 +1,4 @@
-function [PSTH,XPSTH,MeanPSTH] = doPSTH(SpikeTimes,EventTime,BinSize,NbBins,SamplingRate,CellNbs)
+function [PSTH,XPSTH,MeanPSTH] = doPSTH(SpikeTimes, EventTime, BinSize, NbBins, SamplingRate, CellNbs)
 %SpikeTimes: the raster
 %EventTime: the beginning of each repeat
 %BinSize: in the same units than SpikeTimes and EventTime
@@ -10,25 +10,21 @@ function [PSTH,XPSTH,MeanPSTH] = doPSTH(SpikeTimes,EventTime,BinSize,NbBins,Samp
 %XPSTH: for a proper display, use plot(XPSTH,PSTH...
 %MeanPSTH: average firing rate over the defined window
 
-XPSTH = (0:BinSize:(NbBins - 1)*BinSize )/SamplingRate;
+bin_edges = (0 : BinSize : NbBins*BinSize);
+bin_centers = (BinSize/2 : BinSize : BinSize/2 + (NbBins - 1)*BinSize);
 
+XPSTH = bin_centers / SamplingRate;
 PSTH = zeros(length(CellNbs), NbBins);
 
-for icell=1:length(CellNbs)
+for icell = 1:length(CellNbs)
     r = double(SpikeTimes{CellNbs(icell)});
     r = r(:);
 
-    for id=1:length(EventTime)
-        try
-            h = histc(r(:), EventTime(id) + (0:BinSize:(NbBins - 1)*BinSize ) );
-            PSTH(icell, :) = PSTH(icell, :) + h.';
-        catch
-            size(r(:))
-            size(PSTH(icell, :))
-            size(h(:))
-            error('dim problem')
-        end
+    for rep_time = EventTime
+            h = histcounts(r(:), rep_time + bin_edges);
+            PSTH(icell, :) = PSTH(icell, :) + h;
     end
+    
     PSTH(icell, :) = PSTH(icell, :) / length(EventTime);
     PSTH(icell, :) = PSTH(icell, :) / (BinSize/SamplingRate);
     MeanPSTH(icell) = mean(PSTH(icell, :));
