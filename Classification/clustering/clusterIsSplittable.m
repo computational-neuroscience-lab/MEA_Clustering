@@ -1,11 +1,17 @@
 function isSplittable = clusterIsSplittable(indexesClass)
 
-global refFeatures;
-global splittableMinSize;
-global splittableMinSTD;
+global cluster_split_size;
+global cluster_split_psthSNR;
+global cluster_split_staSNR;
 
 sizeClass = length(indexesClass);
-classFeatures = refFeatures(indexesClass, :);
-avgSTD = mean(std(classFeatures, [], 1));
+load(getDatasetMat(), "temporalSTAs", "psths");
 
-isSplittable = and(sizeClass >= splittableMinSize, avgSTD >= splittableMinSTD);
+norm_psths = psths(indexesClass, :) ./ max(psths(indexesClass, :), [], 2);
+
+snr_psth = doSNR(norm_psths);
+snr_sta = doSNR(temporalSTAs(indexesClass, :));
+
+isSplittable = (sizeClass >= cluster_split_size) && ...
+               (snr_psth <= cluster_split_psthSNR) && ...
+               (snr_sta <= cluster_split_staSNR);

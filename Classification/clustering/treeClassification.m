@@ -1,4 +1,4 @@
-function [clustersTable, classTree, PCAs] = treeClassification(labels2cells, labelsToCluster)
+function [clustersTable, classTree, PCAs] = treeClassification(clusters_params, labels2cells, labelsToCluster)
 
 % ALGORITHM FOR UNSUPERVISED RECURSIVE CLASSIFICATION OF RGCs
 % The population of cells is subdivided in clusters recursively.
@@ -19,6 +19,7 @@ function [clustersTable, classTree, PCAs] = treeClassification(labels2cells, lab
 % FINAL and hence will not be subclustered [list: labels]
 
 load(getDatasetMat(), 'cellsTable', 'tracesMat')
+% load(getDatasetMat(), 'cellsTable', 'temporalSTAs')
 
 % global parameters
 global refFeatures;
@@ -28,18 +29,31 @@ global nPcaComponents;
 global features;
 global nMaxBranchings;
 
-global admissibleMinSize;
-global admissibleMaxSTD;
-
-global splittableMinSize;
-global splittableMinSTD;
+global cluster_min_size;
+global cluster_min_psthSNR;
+global cluster_min_staSNR;
+global cluster_split_size;
+global cluster_split_psthSNR;
+global cluster_split_staSNR;
 
 % global structures
 global clustersTable;
 global PCAs;
 
-
 %-------------------------- PARAMETERS ----------------------------------%
+
+if ~exist('clusters_params','var') || isempty(clusters_params)
+    
+    % DEFAULT PARAMETERS
+    clusters_params.min_size = 8;
+    clusters_params.split_size = 12;
+    
+    clusters_params.min_psth_SNR = .7;
+    clusters_params.min_sta_SNR = .85;
+    
+    clusters_params.split_psth_SNR = .8;
+    clusters_params.split_sta_SNR = .9;    
+end
 
 % preliminary classification
 refFeatures = tracesMat;
@@ -52,13 +66,14 @@ nPcaComponents = [10, 10, 10, 10];
 nMaxBranchings = [2, 25, 10, 10];
 
 % admissibility check
-admissibleMinSize = 5;	% default = 4
-admissibleMaxSTD = 0.12;	% default = 0.25
+cluster_min_size = clusters_params.min_size;
+cluster_min_psthSNR = clusters_params.min_psth_SNR;
+cluster_min_staSNR =  clusters_params.min_sta_SNR;
 
 % splittability check
-splittableMinSize = 10;	% default = 12
-splittableMinSTD = 0.04;	% default = 0.2
-
+cluster_split_size = clusters_params.split_size;
+cluster_split_psthSNR = clusters_params.split_psth_SNR;
+cluster_split_staSNR = clusters_params.split_sta_SNR;
 
 %-----------------------------STRUCTURES---------------------------------%
 
@@ -135,5 +150,5 @@ if nIterations > 0
     end
 end
 
-save(getDatasetMat, 'clustersTable', 'PCAs', 'classTree', '-append');
+save(getDatasetMat, 'clusters_params', 'clustersTable', 'PCAs', 'classTree', '-append');
 buildClassesTable();

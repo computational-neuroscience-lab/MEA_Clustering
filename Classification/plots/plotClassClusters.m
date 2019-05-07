@@ -23,4 +23,4 @@ for iType = 1:numel(typeIDs)
 end    
  hold off
  legend(typeIDs)
- title(text);
+ title(text, "Interpreter", "none");

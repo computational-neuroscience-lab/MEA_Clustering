@@ -1,6 +1,5 @@
 function changeDataset(datasetId)
 
-load(strcat(projectPath(), '/Datasets/listOfDatasets.mat'), 'datasets');
 try
     load(strcat(projectPath(), '/Datasets/listOfDatasets.mat'), 'datasets');
 catch

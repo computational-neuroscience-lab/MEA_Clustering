@@ -1,7 +1,7 @@
-function [dsK, dsAngle, osK, osAngle, directionModules] = isDirectionSelective(barPSTHs)
+function [dsK, dsAngle, osK, osAngle, directionModules] = isDirectionSelective(bars_psth, directions)
 
-directions = [0, pi* 1/4, pi* 1/2, pi* 3/4, pi, pi* 5/4, pi* 3/2, pi* 7/4];
-[nCells, nSteps, nDirections] = size(barPSTHs);
+nCells = size(bars_psth, 1);
+nDirections = size(bars_psth, 3);
 
 dsK = zeros(nCells, 1);
 osK = zeros(nCells, 1);
@@ -14,7 +14,7 @@ orVectors = zeros(nCells, nDirections);
 
 directionModules = zeros(nCells, nDirections);
 for iCell = 1:nCells
-    cellBarPSTHs = squeeze(barPSTHs(iCell, :, :));
+    cellBarPSTHs = squeeze(bars_psth(iCell, :, :));
     [~, ~, dirComponents] = svd(cellBarPSTHs);
     directionModules(iCell, :) = dirComponents(:,1)';
     

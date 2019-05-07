@@ -6,7 +6,7 @@ if numel(experiment) > 1
 end
 
 load(getDatasetMat(), 'psths', 'params')
-tBin = params.tBin;
+tBin = params.psth.tBin;
 
 figName = strcat("Figure");
 figure('Name', figName);
@@ -19,10 +19,10 @@ plotTSTAs(indices);
 
 subplot(2, 5, [8, 9]);
 plotSSTAs(indices);
-title("Receptive Fields");
+title("Receptive Fields", "Interpreter", "none");
 
 subplot(2, 5, [5, 10]);
-title(strcat("Exp #", experiment));
+title(strcat("Exp #", experiment), "Interpreter", "none");
 text(.2, .95, "INDICES:")
 
 n_indices = sum(indices>0);

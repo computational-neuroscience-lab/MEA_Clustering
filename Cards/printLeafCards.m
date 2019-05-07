@@ -13,7 +13,7 @@ end
 if numel(subclasses) > 0
     for class = subclasses
         plotClassCard(class, experiments);
-        saveas(gcf, regexprep(class, '\.', '_'),'jpg')
+        saveas(gcf, regexprep(class, '\.', ','),'jpg')
         close;
     end
 end

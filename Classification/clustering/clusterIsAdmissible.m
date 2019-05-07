@@ -1,11 +1,18 @@
 function isAdmissible = clusterIsAdmissible(indexesClass)
 
-global refFeatures;
-global admissibleMinSize;
-global admissibleMaxSTD;
+global cluster_min_size;
+global cluster_min_psthSNR;
+global cluster_min_staSNR;
+
 
 sizeClass = length(indexesClass);
-classFeatures = refFeatures(indexesClass, :);
-avgSTD = mean(std(classFeatures, [], 1));
+load(getDatasetMat(), "temporalSTAs", "psths");
 
-isAdmissible = and(sizeClass >= admissibleMinSize, avgSTD <= admissibleMaxSTD);
+norm_psths = psths(indexesClass, :) ./ max(psths(indexesClass, :), [], 2);
+
+snr_psth = doSNR(norm_psths);
+snr_sta = doSNR(temporalSTAs(indexesClass, :));
+
+isAdmissible = (sizeClass >= cluster_min_size) && ...
+               (snr_psth >= cluster_min_psthSNR) && ...
+               (snr_sta >= cluster_min_staSNR);

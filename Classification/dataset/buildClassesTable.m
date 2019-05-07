@@ -7,20 +7,16 @@ nClasses = length(classNames);
 
 classesTable = struct(  'name',     cell(1, nClasses), ...
                         'size',     cell(1, nClasses), ...
-                        'avgSTD',  cell(1, nClasses), ...
+                        'SNR',  cell(1, nClasses), ...
                         'indices',  cell(1, nClasses) ...
                      );
 for iClass = 1:numel(classNames)
     name = classNames(iClass);
     indices = classIndices(name);
     
-    setResponses = tracesMat(indices, :);
-    stdResponse = std(setResponses, [], 1);
-    avgSTD = mean(stdResponse);
-
     classesTable(iClass).name = classNames(iClass);
     classesTable(iClass).size = sum(indices);
-    classesTable(iClass).avgSTD = avgSTD;
+    classesTable(iClass).SNR = doSNR(tracesMat(indices, :));;
     classesTable(iClass).indices = indices;
 
 end

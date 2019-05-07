@@ -30,19 +30,19 @@ catch
 end
 
 % Stim Triggers
-% try
+try
     load(strcat(varsPath,'EvtTimes.mat'), 'evtTimes')
     disp("EvtTimes Loaded")
-% catch
-%     try
-%         load(strcat(dataPath,'StimChannel_data.mat'), 'stimChannel_data')
-%     catch
-%         stimChannel_data = extractStimData(rawFile);
-%         save(strcat(dataPath,'StimChannel_data.mat'), 'stimChannel_data', '-v7.3');
-%     end
-%     evtTimes = extractStimTriggers(stimChannel_data);
-%     save(strcat(dataPath,'EvtTimes.mat'), 'evtTimes')
-% end
+catch
+    try
+        load(strcat(dataPath,'StimChannel_data.mat'), 'stimChannel_data')
+    catch
+        stimChannel_data = extractDMD_Data(rawFile);
+        save(strcat(dataPath,'StimChannel_data.mat'), 'stimChannel_data', '-v7.3');
+    end
+    evtTimes = extractDMDTriggers(stimChannel_data);
+    save(strcat(dataPath,'EvtTimes.mat'), 'evtTimes')
+end
 
 % Retrieve the order of Stimulations
 stims_order = importdata(stimsOrderFile);
@@ -76,6 +76,7 @@ meaRate = 20000; % Hz
 tBin = 0.05;% s
 
 % Test Checkerboard
+figure
 doRaster(35:45, SpikeTimes, check_begin_time_20khz, check_end_time_20khz, meaRate)
 suptitle("CheckerBoard Raster")
 
@@ -83,6 +84,11 @@ suptitle("CheckerBoard Raster")
 test_psth(SpikeTimes, rep_begin_time_20khz, rep_end_time_20khz, meaRate, tBin, euler, euler_sampler_rate);
 suptitle("Euler PSTH")
 
+alfa = .1;
+test_smooth_psth(SpikeTimes, rep_begin_time_20khz, rep_end_time_20khz, meaRate, tBin, euler, euler_sampler_rate, alfa);
+suptitle("Euler Smooth PSTH")
+
+figure
 doRaster(35:45, SpikeTimes, rep_begin_time_20khz, rep_end_time_20khz, meaRate)
 suptitle("Euler Raster")
 

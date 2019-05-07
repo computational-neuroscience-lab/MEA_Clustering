@@ -12,12 +12,8 @@ background = ones(y_size, x_size) * 255;
 image(background);
 hold on
 
-for i =1:size(sSTAs, 2)
-    % BEWARE : PI ROTATION INTRODUCED TO MATCH MEA REFERENCE FRAME
-    x_plot_STA = x_size - sSTAs(i).x;
-    y_plot_STA = y_size - sSTAs(i).y;
-    
-    plot(x_size - sSTAs(i).x, y_size - sSTAs(i).y, 'Color', colors(i, :), 'LineWidth', 1.5)
+for i =1:size(sSTAs, 2)  
+    plot(sSTAs(i).x, sSTAs(i).y, 'Color', colors(i, :), 'LineWidth', 1.5)
 end
 
 xlim([(x_size*.3), (x_size*.7)])
