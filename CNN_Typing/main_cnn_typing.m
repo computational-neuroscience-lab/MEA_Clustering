@@ -11,7 +11,7 @@ c_params_RGC.split_size = 10;
 c_params_RGC.min_psth_SNR = .7;
 c_params_RGC.min_sta_SNR = .9;
 
-c_params_RGC.split_psth_SNR = .8;
+c_params_RGC.split_psth_SNR = .85;
 c_params_RGC.split_sta_SNR = .95;   
 
 % Clustering parameters CNN
@@ -116,9 +116,7 @@ for i_exp = 1:numel(experiments)
     
     ellipseAreas = zeros(numel(spatial), 1);
     for iS = 1:numel(spatial)
-        if numel(spatial(iS).x) > 0
-            ellipseAreas(iS,:) = polyarea(spatial(iS).x, spatial(iS).y);
-        end
+        ellipseAreas(iS,:) = area(spatial(iS));
     end
     
     %----- VALID CELLS SELECTION ---------------------------%

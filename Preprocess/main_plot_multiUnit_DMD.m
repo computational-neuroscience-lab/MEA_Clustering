@@ -2,44 +2,30 @@ close all
 clear
 clc
 
-% Load Euler Stim
-load("euler_stim/EulerStim180530.vec")
-euler_length = 999;
-euler_stim = EulerStim180530(2:end, 2);
-euler_rep = euler_stim(1:euler_length);
+% INPUT VARIABLES
+file_prefix = 'euler_data/euler_sppa0001_';
+stim_vec = "euler_stim/EulerStim180530.vec";
+stim_nsteps = 999;
 
 % Load Spike Trains
-filename = 'euler_data/euler_sppa0001_';
-SpikeTimes = cell(1, 256);
-for ich = 1:256
-    if ich < 10
-        a = importdata([filename '0' int2str(ich) '.dat']);
-    else
-        a = importdata([filename int2str(ich) '.dat']);
-    end
-    if isfield(a, 'data')
-        SpikeTimes{ich} = a.data;
-        SpikeTimes{ich} = SpikeTimes{ich}(:, 1);
-    end
-end
+SpikeTimes = extractMultiUnit_dat(file_prefix);
 
 % Compute Trigger Times and Repetitions
-cells_idx = [1:256];
-dmd_id = 127;
-TrigTimes = SpikeTimes{dmd_id};
-stimSampling = median(diff(TrigTimes));
-rep_begin_time = TrigTimes(1:euler_length:end);
-rep_dts = diff(rep_begin_time);
-rep_dt = median(rep_dts);
-n_reps = length(rep_dts);
+cells_idx = 1:256;
+dmd_times = SpikeTimes{127};
+dmd_rate = median(diff(dmd_times));
+[rep_begin, ~, rep_dt] = getConsecutiveStimRepetitions(dmd_times, stim_nsteps);
 
 % Do PSTHs
 binSize = .05;
 nTBins = round(rep_dt / binSize);
-[PSTH, XPSTH, ~] = doPSTH(SpikeTimes, rep_begin_time(1), binSize*30, nTBins, 1, cells_idx);   
+[PSTH, XPSTH, ~] = doPSTH(SpikeTimes, rep_begin, binSize, nTBins, 1, cells_idx);   
 
 % Resample Euler Stim for plots
-euler_resampled = interp1(1:euler_length, euler_rep, 1:binSize/stimSampling:euler_length);
+load(stim_vec)
+euler_stim = EulerStim180530(2:end, 2);
+euler_rep = euler_stim(1:stim_nsteps);
+euler_resampled = interp1(1:stim_nsteps, euler_rep, 1:binSize/dmd_rate:stim_nsteps);
 euler_resampled = (euler_resampled - euler_resampled(end));
 euler_resampled = euler_resampled / max(euler_resampled) * 10;
 
@@ -55,7 +41,7 @@ for i = 1:l_raster:length(cells_idx)
     set(gcf,'Position',[(width/2)-horz/2, (height/2)-vert/2, horz, vert]);
     
     c_idx = cells_idx(i:(i+l_raster-1));
-    doRaster(c_idx, SpikeTimes, rep_begin_time, rep_begin_time+rep_dt, 1, 5)
+    doPlotRaster(c_idx, SpikeTimes, rep_begin, rep_begin+rep_dt, 1, 5)
     title_txt = strcat("Electrodes from  #", int2str(c_idx(1)), " to #", int2str(c_idx(end)));
     title(title_txt)
     

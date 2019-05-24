@@ -1,10 +1,5 @@
-function [rep_begin, rep_end] = getMultiBarsRepetitions(barsEvtTime, pattern_version)
+function [rep_begin, rep_end] = getMultiBarsRepetitions(barsEvtTime, bars_file)
 
-if ~exist('pattern_version', 'var')
-    pattern_version = '_180525';
-end
-
-bars_file = strcat(stimPath, '/Bars/DS_MEA', pattern_version, '.vec');
 bars_vec = load(bars_file);
 bars_seq = bars_vec(2:end, 5);
 

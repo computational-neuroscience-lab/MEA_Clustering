@@ -18,15 +18,18 @@ image(background);
 hold on
 
 for i = indices_only1   
-    plot(spatialSTAs(i).x, spatialSTAs(i).y, 'Color', colors(1, :), 'LineWidth', 1.5)
+    [x, y] = spatialSTAs(i);
+    plot(x, y, 'Color', colors(1, :), 'LineWidth', 1.5)
 end
 
 for i = indices_only2 
-    plot(spatialSTAs(i).x, spatialSTAs(i).y, 'Color', colors(2, :), 'LineWidth', 1.5)
+    [x, y] = spatialSTAs(i);
+    plot(x, y, 'Color', colors(2, :), 'LineWidth', 1.5)
 end
 
 for i = indices_both
-    plot(spatialSTAs(i).x, spatialSTAs(i).y, 'Color', colors(3, :), 'LineWidth', 1.5)
+    [x, y] = spatialSTAs(i);
+    plot(x, y, 'Color', colors(3, :), 'LineWidth', 1.5)
 end
 
 xlim([(x_size*.3), (x_size*.7)])

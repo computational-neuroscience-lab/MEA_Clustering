@@ -51,7 +51,8 @@ euler_index = contains(stims_order, 'EULER');
 
 % Checkerboard Repetitions
 Frames = evtTimes{checker_index};
-[check_begin_time_20khz, check_end_time_20khz] = getCheckerboardRepetitions(Frames);
+checkerboard_mat = strcat(stimPath, '/Checkerboard/checkerboard.mat');
+[check_begin_time_20khz, check_end_time_20khz] = getCheckerboardRepetitions(Frames, checkerboard_mat);
 save(strcat(varsPath, 'CheckerBoard/Checkerboard_RepetitionTimes.mat'), 'check_begin_time_20khz', 'check_end_time_20khz')
 
 % Euler Repetitions

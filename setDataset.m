@@ -76,8 +76,8 @@ for iExp = 1:numel(experiments)
     
     ellipseAreas = zeros(numel(spatial), 1);
     for iS = 1:numel(spatial)
-        if numel(spatial(iS).x) > 0
-            ellipseAreas(iS,:) = polyarea(spatial(iS).x, spatial(iS).y);
+        if numel(spatial(iS)) > 0
+            ellipseAreas(iS,:) = polyarea(spatial(iS));
         end
     end
     
