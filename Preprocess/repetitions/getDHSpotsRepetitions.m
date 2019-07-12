@@ -6,12 +6,16 @@ load(dh_frames_mat, 'TotalBlock', 'BlockSign');
 single_sequences = sum(TotalBlock > 0, 1) == 1;
 
 single_idx = single_sequences(sequence2frames)';
-repeated_idx = BlockSign(sequence2frames) & ~single_idx;
-unique_idx = ~BlockSign(sequence2frames) & ~single_idx;
+repeated_idx = BlockSign(sequence2frames) & ~single_idx';
+unique_idx = ~BlockSign(sequence2frames) & ~single_idx';
 
 
 assert(length(dhTimes_init) == length(dhTimes_end));
 assert(length(dhTimes_init) <= length(order));
+
+if(length(dhTimes_init) < length(order))
+    fprintf('\tWARNING: %i triggers expected, but only %i were found\n', length(order), length(dhTimes_init));
+end
 
 all.rep_begin = cell(1, max(order));
 all.rep_end = cell(1, max(order));

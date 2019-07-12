@@ -21,3 +21,5 @@ xlim([(x_size*.3), (x_size*.7)])
 ylim([(y_size*.3), (y_size*.7)])
 set(gca,'XTickLabel',[]);
 set(gca,'YTickLabel',[]);
+
+title('receptive field')

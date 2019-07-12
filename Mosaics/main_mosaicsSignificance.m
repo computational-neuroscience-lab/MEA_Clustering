@@ -17,7 +17,7 @@ for i_exp = 1:length(exps)
                     mosaicSignificances(i_class, i_exp) = false;
                     mosaicPValues(i_class, i_exp) = NaN;
         else
-            [h, p] = kstest2(nnnds(:),  null_nnnds(:));
+            [h, p] = kstest2(nnnds(:),  null_nnnds(:), 'Tail', 'smaller');
             mosaicSignificances(i_class, i_exp) = h;
             mosaicPValues(i_class, i_exp) = p;
         end

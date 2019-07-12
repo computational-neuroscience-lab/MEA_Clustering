@@ -32,7 +32,7 @@ function rs = getFiringRates(spikes, time_window, rep_begins, time_resolution, k
     
     for i = 1:n_repetitions
         spikes = spike_trains{i};
-        spikes2time = time_window - spikes.';
+        spikes2time = time_window - spikes(:);
         % firing rates are computed by convolving the kernel in time
         rs(i, :) = squeeze(sum(kernel(spikes2time, time_resolution), 1) );   
     end

@@ -1,4 +1,4 @@
-function [nnnds, null_nnnds] = getNullNNNDs(n_cells, exp_id)
+function null_nnnds = getNullNNNDs(n_cells, exp_id)
 
 load(getDatasetMat, 'classesTableNotPruned');
 load(getDatasetMat, 'nullNNNDs');

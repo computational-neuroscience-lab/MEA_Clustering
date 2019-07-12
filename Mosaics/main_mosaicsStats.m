@@ -3,7 +3,7 @@ load(getDatasetMat, 'spatialSTAs', 'stas');
 [h, w, ~] = size(stas{1});
 n_cells = numel(stas);
 
-n_surrogates = 100;
+n_surrogates = 1000;
 classes = [classesTableNotPruned.name];
 exps = [experiments{:}];
 
@@ -20,10 +20,10 @@ for i_exp = 1:length(exps)
     exp_rfs_uniques = spatialSTAs(exp_idx_uniques);
     exp_mask = computeMosaicMask(exp_rfs_uniques, w, h);
 
-    for i_class = 1:length(classes)    
+    parfor i_class = 1:length(classes)    
         class_id = classes(i_class);
         idx = classExpIndices(class_id, exp_id);
-        [idx_uniques, idx_duplicates] = filterDuplicates(idx);
+        [idx_uniques, ~] = filterDuplicates(idx);
         rfs = spatialSTAs(idx_uniques);
 
         mosaicNNNDs{i_class, i_exp} = computeNNNDs(rfs);
@@ -59,5 +59,5 @@ for i_exp = 1:length(exps)
         end
     end
 end
-% save(getDatasetMat, 'mosaicNNNDs', 'moisaicMap', '-append');
+save(getDatasetMat, 'mosaicNNNDs', 'moisaicMap', '-append');
 save(getDatasetMat, 'nullNNNDs', 'nullCoverage', 'nullMosaic', '-append');

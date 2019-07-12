@@ -11,7 +11,7 @@ IS=online_STA_parameters();
 
 %%% Stimulus triggers %%%
 % must contain peak_times or Frames, list of trigger times
-triggers_file = strcat('/media/fran_tr/Elements/MEA_Experiments/', exp_Id, '/processed/STA/Frames.mat'); %portable
+triggers_file = [dataPath '/' exp_Id '/processed/STA/Frames.mat']; %portable
 
 %%% Stimulus checkerboard file (must be a .mat file. Use convert_stim_from_binary_file to convert a binary file into .mat) %%%
 % must contain _nsqXXXX_ with XXXX the number of quarres per screen side during display
@@ -21,11 +21,11 @@ IS.StimFilePath = 'binarysource1000Mbits';
 
 %%% Spike time files %%%
 % can be a .data containing SpikeTimes, cell of spike times for each cell, OR 1 .mat data for each cell containing SpikeTime, list of the spike times
-spikes_file = strcat('/media/fran_tr/Elements/MEA_Experiments/', exp_Id, '/processed/STA/SpikeTimes.data');
+spikes_file = [dataPath '/' exp_Id '/processed/STA/SpikeTimes.data'];
 
 
 %%% Channels to analyse %%%
-spikes_times_struct_q = load(strcat('/media/fran_tr/Elements/MEA_Experiments/', exp_Id, '/processed/SpikeTimes.mat'));
+spikes_times_struct_q = load([dataPath '/' exp_Id '/processed/SpikeTimes.mat']);
 Channels = 1:numel(spikes_times_struct_q.SpikeTimes); %number of cells
 
 IS.Nlatency=21;  % by default 21 different time bins (-20 : 0)   

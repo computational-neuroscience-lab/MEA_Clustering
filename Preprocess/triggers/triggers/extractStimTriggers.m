@@ -14,8 +14,8 @@ if EvtTime_end(1) < EvtTime_init(1)
     EvtTime_end = EvtTime_end(2:end);
 end    
 
-EvtIntervals = EvtTime_init(2:end) - EvtTime_end(1:end-1);
-DiscontinuityIndices = find(diff(EvtIntervals) > dt_threshold*frame_rate) + 1;
+EvtIntervals = diff(EvtTime_init)/frame_rate;
+DiscontinuityIndices = find(EvtIntervals > dt_threshold);
 
 StimBegin_Indices = [1; DiscontinuityIndices + 1];
 StimEnd_Indices = [DiscontinuityIndices; numel(EvtTime_init)];
@@ -29,5 +29,5 @@ end
 % Debug: show the longest time intervals found
 % to make sure everything is ok
 sortedIntervals = sort(EvtIntervals, 'descend');
-longest_time_gaps_secs = sortedIntervals(1:20) / frame_rate
-shortest_time_gaps_secs = sortedIntervals(end-20:end) / frame_rate
+longest_time_gaps_secs = sortedIntervals(1:20)
+shortest_time_gaps_secs = sortedIntervals(end-20:end)

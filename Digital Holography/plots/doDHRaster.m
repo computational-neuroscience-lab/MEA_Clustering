@@ -1,12 +1,15 @@
-function doDHRaster(i_cell, pattern_type)
+function doDHRaster(i_cell)
 
 % Load Spikes
 load(getDatasetMat(), "spikes");
 load(getDatasetMat(), "params");
 load(getDatasetMat(), "dh");
 
-r_initial_offset = -0.75;
+r_initial_offset = -0.5;
 r_length = dh.period + -r_initial_offset * 2;
+
+w_init = dh.t_bin * (dh.bin_init-1) - r_initial_offset;
+w_end = dh.t_bin * (dh.bin_end) - r_initial_offset;
 
 spike_train = spikes{i_cell};
 
@@ -15,16 +18,17 @@ load(getDatasetMat(), "experiments");
 assert(numel(experiments) == 1)
 expId =  experiments{1};
 
-dh_path = strcat(dataPath, "/", expId, "/processed/DHSpots/DHSpots_stim.mat");
-dead_times_path = strcat(dataPath, "/", expId, "/processed/deadtimes.txt");
-load(dh_path, "evtTimes")
-load(dead_times_path)
+reps_file = [dataPath '/' char(expId) '/processed/DH/DHRepetitions.mat'];
 
 % Get all Stim Repetitions
-[r_repeated, ~, ~] = getSpotsRepetitions(evtTimes, pattern_type);
-n_patterns = numel(r_repeated);
+load(reps_file, "multi_begin_time");
+rep_begin_time = multi_begin_time;
+
+patterns = 1:numel(rep_begin_time);
+
+n_patterns = numel(rep_begin_time);
 n_tot_repetitions = 0;
-for r = r_repeated
+for r = rep_begin_time(patterns)
     n_tot_repetitions = n_tot_repetitions + length(r{:});
 end
 
@@ -39,11 +43,16 @@ rect_edges = [-r_initial_offset, 0, dh.period, n_tot_repetitions];
 rectangle('Position', rect_edges,'FaceColor', rect_color)
 hold on
 
+set(gca,'ytick',[])
+xlabel("Spike Times (s)")
+ylabel("Patterns")
+title(strcat("Cell #", string(i_cell), ", repeated patterns"))
+
 % add a stripe o spike trains for each pattern
 i_row = 0;
-for i_pattern = 1:numel(r_repeated)
-    rs_init = r_repeated{i_pattern} + r_initial_offset * params.meaRate;
-    rs_end = r_repeated{i_pattern} + (r_initial_offset + r_length) * params.meaRate;
+for i_pattern = patterns
+    rs_init = rep_begin_time{i_pattern} + r_initial_offset * params.meaRate;
+    rs_end = rep_begin_time{i_pattern} + (r_initial_offset + r_length) * params.meaRate;
     color = colors(i_pattern, :);
 
     for r = 1:length(rs_init)
@@ -55,11 +64,11 @@ for i_pattern = 1:numel(r_repeated)
         
         y_spikes_rep = ones(1, length(spikes_rep)) * i_row;
         
-        scatter(spikes_rep / params.meaRate, y_spikes_rep, 6, color, 'filled')
+        scatter(spikes_rep / params.meaRate, y_spikes_rep, 20, color, 'filled')
     end        
 end
 
-set(gca,'ytick',[])
-xlabel("Spike Times (s)")
-ylabel("Patterns")
-title(strcat("Cell #", string(i_cell), ", ", pattern_type, " patterns"))
+% add window
+line([w_init w_init], [0 i_row], 'LineWidth', 1.5, 'Color', 'red'); 
+line([w_end w_end], [0 i_row], 'LineWidth', 1.5, 'Color', 'red'); 
+

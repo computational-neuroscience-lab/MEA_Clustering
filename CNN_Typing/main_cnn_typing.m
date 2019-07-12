@@ -8,25 +8,25 @@ params.psth.tBin = 0.05; % s
 c_params_RGC.min_size = 7;
 c_params_RGC.split_size = 10;
 
-c_params_RGC.min_psth_SNR = .7;
+c_params_RGC.min_psth_SNR = .6;
 c_params_RGC.min_sta_SNR = .9;
 
-c_params_RGC.split_psth_SNR = .85;
-c_params_RGC.split_sta_SNR = .95;   
+c_params_RGC.split_psth_SNR = .825;
+c_params_RGC.split_sta_SNR = .95;  
 
 % Clustering parameters CNN
 c_params_CNN.min_size = 7;
 c_params_CNN.split_size = 10;
 
-c_params_CNN.min_psth_SNR = .6;
+c_params_CNN.min_psth_SNR = .5;
 c_params_CNN.min_sta_SNR = .9;
 
-c_params_CNN.split_psth_SNR = .85;
-c_params_CNN.split_sta_SNR = .98;
+c_params_CNN.split_psth_SNR = .75;
+c_params_CNN.split_sta_SNR = .95;
 
 % Other parameters
-cnn_dataset_label = "CNN";
-rgc_dataset_label = "RGC";
+cnn_dataset_label = "CNN_bis";
+rgc_dataset_label = "RGC_bis";
 acceptedLabels = 3; % 5=A, 4=AB, 3=ABC
 
 % load Giulio's data generated with CNN models
@@ -169,9 +169,3 @@ load(getDatasetMat(), "cellsTable");
 labels_models = containers.Map;
 labels_models(char(cnn_dataset_label)) = logical(1:numel(cellsTable));
 treeClassification(c_params_CNN, labels_models);
-
-[matchTable, matchByCellsTable, matchGrid] = compare_partitions_all(rgc_dataset_label, cnn_dataset_label);
-save("_data/RGCMatching.mat", "matchTable", "matchByCellsTable", "matchGrid")
-
-[matchTable, matchByCellsTable, matchGrid] = compare_partitions_all(cnn_dataset_label, rgc_dataset_label);
-save("_data/CNNMatching.mat", "matchTable", "matchByCellsTable", "matchGrid")

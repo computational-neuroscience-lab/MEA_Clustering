@@ -19,7 +19,7 @@ function [clustersTable, classTree, PCAs] = treeClassification(clusters_params, 
 % FINAL and hence will not be subclustered [list: labels]
 
 load(getDatasetMat(), 'cellsTable', 'tracesMat')
-% load(getDatasetMat(), 'cellsTable', 'temporalSTAs')
+load(getDatasetMat(), 'cellsTable', 'temporalSTAs')
 
 % global parameters
 global refFeatures;
@@ -45,14 +45,14 @@ global PCAs;
 if ~exist('clusters_params','var') || isempty(clusters_params)
     
     % DEFAULT PARAMETERS
-    clusters_params.min_size = 8;
-    clusters_params.split_size = 12;
+    clusters_params.min_size = 3;
+    clusters_params.split_size = 5;
     
-    clusters_params.min_psth_SNR = .7;
-    clusters_params.min_sta_SNR = .85;
+    clusters_params.min_psth_SNR = .6;
+    clusters_params.min_sta_SNR = .9;
     
-    clusters_params.split_psth_SNR = .8;
-    clusters_params.split_sta_SNR = .9;    
+    clusters_params.split_psth_SNR = .825;
+    clusters_params.split_sta_SNR = .95;    
 end
 
 % preliminary classification
@@ -60,10 +60,10 @@ refFeatures = tracesMat;
 refNPcaComponents = 10;
 
 % recursive classification
-nIterations = 4;
-features = {tracesMat, tracesMat, tracesMat, tracesMat};
-nPcaComponents = [10, 10, 10, 10];
-nMaxBranchings = [2, 25, 10, 10];
+nIterations = 3;
+features = {temporalSTAs, tracesMat, tracesMat};
+nPcaComponents = [10, 10, 10];
+nMaxBranchings = [12, 10, 8];
 
 % admissibility check
 cluster_min_size = clusters_params.min_size;
