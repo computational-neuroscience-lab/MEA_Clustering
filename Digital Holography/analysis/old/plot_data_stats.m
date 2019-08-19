@@ -2,6 +2,7 @@ close all
 clear
 
 load(getDatasetMat, "dh_stats")
+load(getDatasetMat, "dh_models")
 load(getDatasetMat, "classesTable")
 load(getDatasetMat, "clustersTable")
 dh_stats.accuracies(dh_stats.accuracies < 0) = 0;

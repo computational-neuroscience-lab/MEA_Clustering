@@ -29,4 +29,7 @@ else
     avgSTD_string = string(snr);
 end
 
+xlabel('Time Bins')
+ylabel('Normalized Stimulus Intensity')
+
 title(strcat("STAs (SNR = ", avgSTD_string, ")"))

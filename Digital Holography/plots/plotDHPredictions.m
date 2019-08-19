@@ -1,35 +1,30 @@
 function plotDHPredictions(i_cell)
 
-% Load PSTHS
-load(getDatasetMat(), "dh", "dh_stats", "cellsTable");
-
-rep_pattern2psth = squeeze(dh.responses.repeated.psth(i_cell, :, dh.bin_init:dh.bin_end));
-rep_pattern_avgRate = mean(rep_pattern2psth, 2);
-
-rep_pattern_prediction = squeeze(dh_stats.predictions(i_cell, :, :));
-accuracy = dh_stats.accuracies(i_cell);
 
 figure()
 
-ss = get(0,'screensize');
-vert = 800;
-horz = 1200;
-set(gcf,'Position',[2000, 1500, horz, vert]);
+try
+    ss = get(0,'MonitorPositions'); % try to get the secondary monitor
+    x_0 = ss(2, 1);
+    y_0 = ss(2, 2);
+    width = ss(2, 3);
+    height = ss(2, 4);
+    set(gcf,'Position',[x_0, y_0, width, height]);
+catch
+    ss = get(0,'screensize');
+    width = ss(3);
+    height = ss(4);
+    set(gcf,'Position',[0, 0, width, height]);
+end
 
-subplot(1, 2, 1)
+subplot(1, 4, 1)
+do1DHRaster(i_cell, 1:50)
+
+subplot(1, 4, 2)
+do1DHRaster(i_cell, 51:100)
+
+subplot(1, 4, 3);
 doDHRaster(i_cell)
-title({"N-Spot";"Spikes Raster"});
 
-subplot(1, 2, 2);
-barh([rep_pattern_avgRate, rep_pattern_prediction])
-xlabel("Mean Spiking Rate (Hz)");
-yticks(1:length(rep_pattern_avgRate));
-title({"N-Spot";"Mean Activation"});
-legend("cell recordings", "model prediction", "Location", "Southwest");
-
-title_1 = strcat("Cell #", string(i_cell));
-title_2 = strcat("Model Accuracy = ",  string(accuracy));
-suptitle({title_1; title_2});
-
-
-
+subplot(1, 4, 4);
+doDHHistogram(i_cell)

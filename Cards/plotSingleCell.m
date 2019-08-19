@@ -6,29 +6,35 @@ cell_exp = clustersTable(cell_id).Experiment;
 cell_type = clustersTable(cell_id).Type;
 
 figure('Name', ['Cell_#' char(cell_id)]);
-
-ss = get(0,'screensize');
-width = ss(3);
-height = ss(4);
-vert = 900;
-horz = 1200;
-set(gcf,'Position',[(width/2)-horz/2, (height/2)-vert/2, horz, vert]);
+try
+    ss = get(0,'MonitorPositions'); % try to get the secondary monitor
+    x_0 = ss(2, 1);
+    y_0 = ss(2, 2);
+    width = ss(2, 3);
+    height = ss(2, 4);
+    set(gcf,'Position',[x_0, y_0, width, height]);
+catch
+    ss = get(0,'screensize');
+    width = ss(3);
+    height = ss(4);
+    set(gcf,'Position',[0, 0, width, height]);
+end
 
 subplot(2, 2, 1)
 plotPSTH(cell_id);
-title('psth');
+title('PSTH');
 
 subplot(2, 2, 2)
 plotMean2Variance(cell_id);
-title('mean 2 variance');
+title('Spiking-Rate Stats');
 
 subplot(2, 2, 3)
 plotTSTAs(cell_id);
-title('sta');
+title('STA');
 
 subplot(2, 2, 4)
 plotSSTAs(cell_id);
-title('receptive field')
+title('Receptive Field')
 
 supertitle = {  ['Cell #' num2str(cell_id) '. ' 'Type: ' char(cell_type)];
                 ['Experiment: ' char(cell_exp) ', N = ' num2str(cell_N) '.']};

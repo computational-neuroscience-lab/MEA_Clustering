@@ -85,8 +85,8 @@ for i_dht = 1:numel(dhTimes)
         PatternCoords_Laser = [PatternCoords_Laser; PatternMicron];
         
         % Points in MEA coords are used to get their relative positions
-        h = getHomography(['img' num2str(i_dht)], 'mea', expId);
-        PatternCoords_MEA = [PatternCoords_MEA; transformPointsV(h, PatternImage)];
+%         h = getHomography(['img' num2str(i_dht)], 'mea', expId);
+%         PatternCoords_MEA = [PatternCoords_MEA; transformPointsV(h, PatternImage)];
     catch
         fprintf('\tnot possible to generate the DH repetitions\n\n');
     end
@@ -96,4 +96,4 @@ end
 save(repetitionsFile, "multi_begin_time", "multi_end_time", "multi_frames");
 save(repetitionsFile, "single_begin_time", "single_end_time", "single_frames", "-append");
 save(repetitionsFile, "unique_begin_time", "unique_end_time", "unique_frames", "-append");
-save(coordsFile, "PatternCoords_Laser", "PatternCoords_MEA");
+% save(coordsFile, "PatternCoords_Laser", "PatternCoords_MEA");

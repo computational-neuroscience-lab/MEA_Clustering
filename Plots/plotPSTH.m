@@ -26,7 +26,8 @@ else
 end
 xlim([0, xs(end)]);
 ylim([-0.1, +1.1]);
-xlabel('(s)')
+xlabel('Time (s)')
+ylabel('Normalized Firing-Rate')
 
 if isnan(snr)
     snr_string = "NaN";

@@ -1,4 +1,4 @@
-function doDHRaster(i_cell, idx_patterns)
+function do1DHRaster(i_cell, idx_patterns)
 
 % Load Spikes
 load(getDatasetMat(), "spikes");
@@ -21,12 +21,13 @@ expId =  experiments{1};
 reps_file = [dataPath '/' char(expId) '/processed/DH/DHRepetitions.mat'];
 
 % Get all Stim Repetitions
-load(reps_file, "multi_begin_time");
+load(reps_file, "single_begin_time");
 
 if ~exist('idx_patterns', 'var')
-    idx_patterns = 1:numel(multi_begin_time);
+    idx_patterns = 1:numel(single_begin_time);
 end
-rep_begin_time = multi_begin_time(idx_patterns);
+
+rep_begin_time = single_begin_time(idx_patterns);
 n_patterns = numel(rep_begin_time);
 
 n_tot_repetitions = 0;
@@ -48,7 +49,7 @@ hold on
 set(gca,'ytick',[])
 xlabel("Spike Times (s)")
 ylabel("Patterns")
-title(strcat("Cell #", string(i_cell), ": N-Spots Raster"))
+title(strcat("Cell #", string(i_cell), ": 1-Spots Raster"))
 
 % add a stripe o spike trains for each pattern
 i_row = 0;
@@ -73,7 +74,7 @@ for i_pattern = 1:numel(rep_begin_time)
     y_ticks(i_pattern) = i_row;  
 end
 yticks(y_ticks)
-yticklabels(yPatternLabels(dh.stimuli.repeated(idx_patterns, :)));
+yticklabels(yPatternLabels(dh.stimuli.singles(idx_patterns, :)));
 
 % add window
 line([w_init w_init], [0 i_row], 'LineWidth', 1.5, 'Color', 'red'); 

@@ -1,6 +1,6 @@
 % function extractAll(expId)
 
-expId = char("20190510");
+expId = char("18_06_2019_checker");
 rawPath = [dataPath(), '/', expId, '/sorted/CONVERTED'];
 varsPath = [dataPath(), '/', expId, '/processed/'];
 stimsOrderFile =  [dataPath(), '/', expId, '/processed/stims_order.txt'];
@@ -57,7 +57,7 @@ checkerboard_mat = strcat(stimPath, '/Checkerboard/checkerboard.mat');
 save(strcat(varsPath, 'CheckerBoard/Checkerboard_RepetitionTimes.mat'), 'check_begin_time_20khz', 'check_end_time_20khz')
 
 % Euler Repetitions
-load(strcat(varsPath,'Euler/Euler_Stim.mat'), 'euler', 'euler_sampler_rate')
+load(strcat(varsPath,'Euler/Euler_Stim.mat'), 'euler')
 euler_evtTime = evtTimes{euler_index}.evtTimes_begin;
 euler_n_steps = length(euler);
 [rep_begin_time_20khz, rep_end_time_20khz] = getConsecutiveStimRepetitions(euler_evtTime, euler_n_steps);
@@ -79,7 +79,7 @@ tBin = 0.05;% s
 
 % Test Checkerboard
 figure
-doPlotRaster(35:45, SpikeTimes, check_begin_time_20khz, check_end_time_20khz, meaRate)
+doPlotRaster(1:10, SpikeTimes, check_begin_time_20khz, check_end_time_20khz, meaRate)
 suptitle("CheckerBoard Raster")
 
 % Test Euler
@@ -91,5 +91,5 @@ plot(xpsth, psth)
 suptitle("Euler Smooth PSTH")
 
 figure
-doPlotRaster(35:45, SpikeTimes, rep_begin_time_20khz, rep_end_time_20khz, meaRate)
+doPlotRaster(1:10, SpikeTimes, rep_begin_time_20khz, rep_end_time_20khz, meaRate)
 suptitle("Euler Raster")

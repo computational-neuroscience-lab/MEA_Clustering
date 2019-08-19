@@ -29,13 +29,13 @@ indici = [64 36 46 57]
 % dh_stats.adaptation_rel = dh_stats.adaptation_abs ./ max(base_rate_singles, base_rate_repeated);
 % 
 % % Compute patterns activation
-% activation_abs = sum(dh_stats.quality_singles .* dh_stats.avg_rate_singles, 2) ./ sum(dh_stats.quality_singles, 2);
+activation_abs = sum(dh_stats.quality_singles .* dh_stats.avg_rate_singles, 2) ./ sum(dh_stats.quality_singles, 2);
 % dh_stats.activation = activation_abs ./ max(activation_abs(:));
 % dh_stats.activation(isnan(dh_stats.activation)) = 0;
 
 % Load accuracies
-load(ACC_MATRIX, "accuracy")
-load(PRED_MATRIX, 'pred_rep')
+load(ACC_MATRIX, "accuracy", "lambda", "ws", "a", "b")
+load(PRED_MATRIX, 'predictions', 'spikeCounts')
 
 dh_stats.accuracies(indici) = accuracy;
 dh_stats.accuracies(isnan(dh_stats.accuracies)) = 0;
