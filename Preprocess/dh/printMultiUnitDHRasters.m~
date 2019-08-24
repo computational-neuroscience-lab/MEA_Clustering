@@ -68,6 +68,7 @@ for id_frame = 1:numel(single_begin_time)
     rasterFile = [dataPath() '/' expId '/processed/DH/Rasters/DH/1spot_#', num2str(id_frame)];
     stim_repeats = single_begin_time{id_frame};
     stim_repeats = stim_repeats(1:min(n_reps, length(stim_repeats)));
+    chosen_pattern = single_frames(id_frame, :)
 
     % Get the multi unit data
     multi_unit = extractMultiUnit_raw(raw_file, stim_repeats - time_before, duration_raster);

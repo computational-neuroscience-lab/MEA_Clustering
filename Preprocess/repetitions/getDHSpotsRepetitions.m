@@ -3,11 +3,14 @@ function [all, single, repeatead, uniques] = getDHSpotsRepetitions(dhTimes_init,
 load(dh_frames_mat, 'TotalBlock', 'BlockSign');
 [frames, sequence2frames, order] = unique(TotalBlock', 'rows');
 
-single_sequences = sum(TotalBlock > 0, 1) == 1;
+single_sequences = sum(logical(TotalBlock) > 0, 1) == 1;
+multi_sequences = sum(logical(TotalBlock) > 0, 1) > 1;
 
 single_idx = single_sequences(sequence2frames)';
-repeated_idx = BlockSign(sequence2frames) & ~single_idx';
-unique_idx = ~BlockSign(sequence2frames) & ~single_idx';
+
+multi_idx = multi_sequences(sequence2frames)';
+repeated_idx = BlockSign(sequence2frames) & multi_idx;
+unique_idx = ~BlockSign(sequence2frames) & multi_idx;
 
 
 assert(length(dhTimes_init) == length(dhTimes_end));
