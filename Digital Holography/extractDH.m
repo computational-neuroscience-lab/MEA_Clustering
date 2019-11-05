@@ -23,7 +23,7 @@ catch
     try
         load([dh_folder '/' data_file], 'DHChannel_data')
     catch
-        DHChannel_data = extractDH_Data(raw_file_path);
+        DHChannel_data = extractDataDH(raw_file_path);
         save([tmpPath '/' data_file], 'DHChannel_data', '-v7.3');
         movefile([tmpPath '/' data_file], dh_folder);
     end
