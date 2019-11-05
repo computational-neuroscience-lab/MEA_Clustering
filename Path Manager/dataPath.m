@@ -1,3 +1,6 @@
 function path = dataPath()
-path = '/home/fran_tr/hodgkin/Public/Francesco/MEA_Experiments';
+
+home_folder = char(java.lang.System.getProperty('user.home'));
+path = [home_folder '/hodgkin/Public/Francesco/MEA_Experiments'];
+% path = ['/storage/Francesco/experiments'];
 

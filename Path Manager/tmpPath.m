@@ -1,2 +1,4 @@
 function path = tmpPath()
-path = '/home/fran_tr/matlab_tmp_variables';
+
+home_folder = char(java.lang.System.getProperty('user.home'));
+path = [home_folder '/Tmp_Vars'];

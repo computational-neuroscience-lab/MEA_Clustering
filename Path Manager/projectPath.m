@@ -1,3 +1,5 @@
 function path = projectPath()
-path = '/home/fran_tr/Projects/MEA_CLUSTERING';
+
+home_folder = char(java.lang.System.getProperty('user.home'));
+path = [home_folder '/Projects/MEA_CLUSTERING'];
 
