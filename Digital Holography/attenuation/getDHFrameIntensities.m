@@ -1,14 +1,15 @@
 function frames_intensities = getDHFrameIntensities(experiment, patterns)
 
+spots_coords = getDHSpotsPositions(experiment);
 n_frames = size(patterns, 1);
 n_spots = size(patterns, 2);
 
 frames_intensities = zeros(n_frames, n_spots);
 for i_pattern = 1:n_frames
     pattern = patterns(i_pattern, :);
-    spots_coords = getDHSpotsPositions(experiment, pattern);
-    intensity = patternIntensities(spots_coords(:, 1), spots_coords(:, 2));
-    intensities = pattern .* intensity;
-    frames_intensities(i_pattern, :) = intensities;
+    for i_spot = find(pattern)
+        intensity = pattern(i_spot) * spot_attenuation(spots_coords(i_spot, 1), spots_coords(i_spot, 2));
+        frames_intensities(i_pattern, i_spot) = intensity;
+    end
 end
 

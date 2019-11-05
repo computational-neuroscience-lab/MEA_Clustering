@@ -1,8 +1,8 @@
-function [ws_norm, a, b] = getDHLNPWeights(i_cell)
+function [ws_norm, a, b] = getDHLNPWeights(i_cell, model)
 
 load(getDatasetMat, 'dh_models');
-ws = dh_models.ws;
-b = dh_models.b;
+ws = dh_models.LNP.ws(model, :);
+b = dh_models.LNP.b(model);
 
 a = max(abs(ws), [], 2);
 ws_norm = ws ./ repmat(a, 1, size(ws,2));

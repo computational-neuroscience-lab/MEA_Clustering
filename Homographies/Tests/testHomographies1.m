@@ -1,5 +1,6 @@
 i_cell = 38;
 experiment = '20170614';
+changeDataset("20170614")
 camera_img = imread('dh_spots.jpg');
 
 spots_coords_image = getDHSpotsCoordsImg(experiment, 1);

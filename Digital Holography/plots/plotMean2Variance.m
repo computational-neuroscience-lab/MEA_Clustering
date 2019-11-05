@@ -3,8 +3,8 @@ load(getDatasetMat, "dh")
 
 mean_ps = [];
 var_ps = [];
-for i_pattern = 1:size(dh.responses.repeated.spikeCounts, 2)
-    responses_repeated = dh.responses.repeated.spikeCounts{i_cell,i_pattern};
+for i_pattern = 1:size(dh.responses.test.spikeCounts, 2)
+    responses_repeated = dh.responses.test.spikeCounts{i_cell,i_pattern};
     mean_p = mean(responses_repeated);
     var_p = var(responses_repeated);
     

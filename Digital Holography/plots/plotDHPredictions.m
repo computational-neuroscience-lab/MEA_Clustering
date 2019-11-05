@@ -1,5 +1,21 @@
-function plotDHPredictions(i_cell)
+function plotDHPredictions(i_cell, model_label)
 
+% Load Spikes
+load(getDatasetMat(), "spikes");
+load(getDatasetMat(), "params");
+load(getDatasetMat(), "dh");
+
+% Load Triggers of DH Spots
+load(getDatasetMat(), "experiments");
+assert(numel(experiments) == 1)
+reps_file = [dataPath '/' char(experiments{1}) '/processed/DH/DHRepetitions.mat'];
+
+cell_spikes = spikes{i_cell};
+
+% Get all Stim Repetitions
+load(reps_file, "zero_begin_time");
+load(reps_file, "single_begin_time");
+load(reps_file, "test_begin_time");
 
 figure()
 
@@ -17,14 +33,26 @@ catch
     set(gcf,'Position',[0, 0, width, height]);
 end
 
+subplot(1, 4, 4);
+plotDHHistogram(i_cell, model_label)
+
 subplot(1, 4, 1)
-do1DHRaster(i_cell, 1:50)
+idx_patterns = 1:50;
+reps_patterns = single_begin_time(idx_patterns);
+labels = yPatternLabels(dh.stimuli.singles(idx_patterns, :));
+plotStimRaster(cell_spikes, reps_patterns, 0.5, 0.5, 20000, labels)
+title(strcat("Cell #", string(i_cell), ": 1-Spots Raster"))
 
 subplot(1, 4, 2)
-do1DHRaster(i_cell, 51:100)
+idx_patterns = 51:100;
+reps_patterns = single_begin_time(idx_patterns);
+labels = yPatternLabels(dh.stimuli.singles(idx_patterns, :));
+plotStimRaster(cell_spikes, reps_patterns, 0.5, 0.5, 20000, labels)
+title(strcat("Cell #", string(i_cell), ": 1-Spots Raster"))
 
-subplot(1, 4, 3);
-doDHRaster(i_cell)
+subplot(1, 4, 3)
+reps_patterns = test_begin_time;
+labels = yPatternLabels(dh.stimuli.test);
+plotStimRaster(cell_spikes, reps_patterns, 0.5, 0.5, 20000, labels)
+title(strcat("Cell #", string(i_cell), ": N-Spots Raster"))
 
-subplot(1, 4, 4);
-doDHHistogram(i_cell)

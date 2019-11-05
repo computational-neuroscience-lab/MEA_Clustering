@@ -2,7 +2,7 @@ function classesTable = buildClassesTable()
 
 loadDataset();
 
-classNames = unique([clustersTable.Type]);
+classNames = getLeafClasses();
 nClasses = length(classNames);
 
 classesTable = struct(  'name',     cell(1, nClasses), ...
@@ -16,10 +16,24 @@ for iClass = 1:numel(classNames)
     
     classesTable(iClass).name = classNames(iClass);
     classesTable(iClass).size = sum(indices);
-    classesTable(iClass).SNR = doSNR(tracesMat(indices, :));;
-    classesTable(iClass).indices = indices;
+    
+    classesTable(iClass).PSTH = mean(psths(indices, :));
+    classesTable(iClass).STA = mean(temporalSTAs(indices, :));
+    
+    if   abs(max(classesTable(iClass).STA)) > abs(min(classesTable(iClass).STA))
+        classesTable(iClass).POLARITY = "ON";
+    else
+        classesTable(iClass).POLARITY = "OFF";
+    end
 
+
+    classesTable(iClass).STD = std(mean(psths(indices, :)));
+    classesTable(iClass).SNR = doSNR(psths(indices, :));
+    classesTable(iClass).indices = indices;
 end
+
+% [~, ii] = sort([classesTable.STD]);
+% classesTable = classesTable(ii);
 
 classesTableNotPruned = classesTable;
 

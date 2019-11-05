@@ -1,52 +1,56 @@
-% function extractAll(expId)
+function extractAll(exp_id)
 
-expId = char("18_06_2019_checker");
-rawPath = [dataPath(), '/', expId, '/sorted/CONVERTED'];
-varsPath = [dataPath(), '/', expId, '/processed/'];
-stimsOrderFile =  [dataPath(), '/', expId, '/processed/stims_order.txt'];
+exp_id = char(exp_id);
+raw_path = [dataPath(), '/' exp_id '/sorted/CONVERTED'];
+vars_path = [dataPath(), '/' exp_id '/processed'];
 results_suffix = '';
 
 % File Paths
-rawFile = strcat(rawPath, '.raw');
-templatesFile = strcat(rawPath, '/CONVERTED.templates', results_suffix, '.hdf5');
-resultsFile = strcat(rawPath, '/CONVERTED.result', results_suffix, '.hdf5');
-% stimsOrderFile = strcat(varsPath, "stims_order.txt");
+raw_file = [raw_path '.raw'];
+templates_file = [raw_path '/CONVERTED.templates' results_suffix '.hdf5'];
+results_file = [raw_path '/CONVERTED.result' results_suffix, '.hdf5'];
+stims_order_file = [vars_path '/' 'stims_order.txt'];
 
 % Spike Times
 try
-    load(strcat(varsPath, 'SpikeTimes.mat'), 'SpikeTimes')
+    load([vars_path '/' 'SpikeTimes.mat'], 'SpikeTimes')
     disp("Spike Times Loaded")
 catch
-    SpikeTimes = extractSpikeTimes(resultsFile);
-    save(strcat(varsPath, 'SpikeTimes.mat'), 'SpikeTimes')
+    SpikeTimes = readSpikeTimes(results_file);
+    save([tmpPath() '/' 'SpikeTimes.mat'], 'SpikeTimes')
+    movefile([tmpPath()  '/' 'SpikeTimes.mat'], vars_path)
     disp("Spike Times Computed")
 end
 
 % Tags
 try
-    Tags = extractTags(templatesFile);
-    save(strcat(varsPath, 'Tags.mat'), 'Tags')
+    Tags = readTags(templates_file);
+    save([tmpPath() '/'  'Tags.mat'], 'Tags')
+    movefile([tmpPath()  '/' 'Tags.mat'], vars_path)
 catch
    disp("WARNING: Tags not found")
 end
 
 % Stim Triggers
 try
-    load(strcat(varsPath,'EvtTimes.mat'), 'evtTimes')
+    load([vars_path '/' 'EvtTimes.mat'], 'evtTimes')
     disp("EvtTimes Loaded")
 catch
     try
-        load(strcat(varsPath,'StimChannel_data.mat'), 'stimChannel_data')
+        load([vars_path '/' 'StimChannel_data.mat'], 'stimChannel_data')
     catch
-        stimChannel_data = extractDMD_Data(rawFile);
-        save(strcat(varsPath,'StimChannel_data.mat'), 'stimChannel_data', '-v7.3');
+        stimChannel_data = extractDataDMD(raw_file);
+        save([tmpPath() '/' 'StimChannel_data.mat'], 'stimChannel_data', '-v7.3');
+        movefile([tmpPath() '/' 'StimChannel_data.mat'], vars_path);
     end
     evtTimes = extractDMDTriggers(stimChannel_data);
-    save(strcat(varsPath,'EvtTimes.mat'), 'evtTimes')
+    save([tmpPath() '/' 'EvtTimes.mat'], 'evtTimes')
+    movefile([vars_path '/' 'EvtTimes.mat'], vars_path)
+    
 end
 
 % Retrieve the order of Stimulations
-stims_order = importdata(stimsOrderFile);
+stims_order = importdata(stims_order_file);
 checker_index = contains(stims_order, 'CHECKERBOARD');
 euler_index = contains(stims_order, 'EULER');
 
@@ -54,23 +58,29 @@ euler_index = contains(stims_order, 'EULER');
 Frames = evtTimes{checker_index}.evtTimes_begin;
 checkerboard_mat = strcat(stimPath, '/Checkerboard/checkerboard.mat');
 [check_begin_time_20khz, check_end_time_20khz] = getCheckerboardRepetitions(Frames, checkerboard_mat);
-save(strcat(varsPath, 'CheckerBoard/Checkerboard_RepetitionTimes.mat'), 'check_begin_time_20khz', 'check_end_time_20khz')
+save([tmpPath() '/' 'Checkerboard_RepetitionTimes.mat'], 'check_begin_time_20khz', 'check_end_time_20khz')
+movefile([tmpPath() '/' 'Checkerboard_RepetitionTimes.mat'], [var_path '/' 'CheckerBoard'])
 
 % Euler Repetitions
-load(strcat(varsPath,'Euler/Euler_Stim.mat'), 'euler')
+load(strcat(vars_path,'Euler/Euler_Stim.mat'), 'euler')
 euler_evtTime = evtTimes{euler_index}.evtTimes_begin;
 euler_n_steps = length(euler);
 [rep_begin_time_20khz, rep_end_time_20khz] = getConsecutiveStimRepetitions(euler_evtTime, euler_n_steps);
-save(strcat(varsPath,'Euler/Euler_RepetitionTimes.mat'), 'rep_begin_time_20khz', 'rep_end_time_20khz')
- 
+save([tmpPath() '/' 'Euler_RepetitionTimes.mat'], 'rep_begin_time_20khz', 'rep_end_time_20khz')
+movefile([tmpPath() '/' 'Euler_RepetitionTimes.mat'], [var_path '/' 'Euler'])
+
 % Spike Sorting Repetitions
-rep_begin_time{1} = rep_begin_time_20khz;
-rep_end_time{1} = rep_end_time_20khz;
-save(strcat(varsPath, 'CONVERTED.stim'), 'rep_begin_time', 'rep_end_time')
+rep_begin_time{1} = check_begin_time_20khz;
+rep_end_time{1} = check_end_time_20khz;
+save([tmpPath() '/' 'CONVERTED.stim'], 'rep_begin_time', 'rep_end_time')
+movefile([tmpPath() '/' 'CONVERTED.stim'], vars_path)
 
 % STA
-save(strcat(varsPath, 'STA/Frames.mat'), 'Frames')
-save(strcat(varsPath, 'STA/SpikeTimes.data'), 'SpikeTimes')
+save([tmpPath() '/' 'Frames.mat'], 'Frames')
+save([tmpPath() '/' 'SpikeTimes.data'], 'SpikeTimes')
+
+movefile([tmpPath() '/' 'Frames.mat'], [var_path '/' 'STA'])
+movefile([tmpPath() '/' 'SpikeTimes.data'], [var_path '/' 'STA'])
 
 
 % Tests
@@ -86,7 +96,7 @@ suptitle("CheckerBoard Raster")
 figure
 alfa = .1;
 n_bins = round((rep_end_time_20khz(1) - rep_begin_time_20khz(1)) / (tBin*meaRate));
-[psth, xpsth, mean_psth, firing_rates] = doSmoothPSTH(SpikeTimes, rep_begin_time_20khz, tBin*meaRate, n_bins, meaRate, 1:numel(SpikeTimes), alfa);
+[psth, xpsth, ~, ~] = doSmoothPSTH(SpikeTimes, rep_begin_time_20khz, tBin*meaRate, n_bins, meaRate, 1:numel(SpikeTimes), alfa);
 plot(xpsth, psth)
 suptitle("Euler Smooth PSTH")
 

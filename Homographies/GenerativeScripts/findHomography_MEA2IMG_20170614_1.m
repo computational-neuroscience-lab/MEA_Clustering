@@ -1,4 +1,4 @@
-c
+
 exp_id = '20170614';
 fv = 1;
 
@@ -14,11 +14,11 @@ l_elec = 30;  % units
 
 anchors_image =   [116, 299, 472, 521;
                    169, 301, 73, 388;
-                   1, 1, 1, 1];
+                   1, 1, 1, 1]
                
 anchors_MEA =   [[3, 7, 11, 12] * l_elec;
                  [9, 6, 11, 4 ] * l_elec;
-                  1, 1, 1,  1 ];
+                  1, 1, 1,  1 ]
 
               
 origin_MEA = [7.5*l_elec; 7.5*l_elec; 1];
@@ -46,7 +46,7 @@ poins_proj = poins_proj ./ poins_proj(3,:);
 [camera_img_proj, camera_mea_ref] = transformImage(H_img2mea, camera_img);
 
 figure()
-% subplot(1,2,1);
+subplot(1,2,1);
 imshow(camera_img)
 hold on
 scatter(anchors_image(1,:), anchors_image(2,:), 'r*')
@@ -57,8 +57,7 @@ scatter(origin_proj(1,:), origin_proj(2,:), 'wx')
 axis on
 title("Image Coordinates")
 
-figure()
-% subplot(1,2,2);
+subplot(1,2,2);
 imshow(camera_img_proj, camera_mea_ref)
 hold on
 scatter(anchors_image_proj(1,:), anchors_image_proj(2,:), 'r*')

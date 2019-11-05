@@ -1,9 +1,9 @@
-function [accuracy, prediction, firingRates] = getDHLNPAccuracies(i_cell)
+function [accuracy, prediction, firingRates] = getDHLNPAccuracies(i_cell, model)
 
 load(getDatasetMat, 'dh_models');
-accuracy = dh_models.accuracies;
-prediction = dh_models.predictions;
-firingRates = dh_models.firingRates;
+accuracy = dh_models.(model).accuracies;
+prediction = dh_models.(model).predictions;
+firingRates = dh_models.(model).firingRates;
 
 if exist('i_cell', 'var')
     accuracy = accuracy(i_cell);

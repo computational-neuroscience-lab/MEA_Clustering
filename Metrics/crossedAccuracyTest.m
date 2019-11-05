@@ -1,4 +1,4 @@
-function crossedAccuracyTest(spikes_cell_array, model_predictions_mat, cells_labels)
+function crossedAccuracyTest(spikes_cell_array, model_predictions_mat, cells_labels, color)
 % spikes_cell_array = cell_array [n_neurons * n_stimulations],
 % and each cell cell_array(ni, sj) containts an array of repetitions.
 % cell cell_array(ni, sj)(rk) represents the number of spikes recorded
@@ -31,22 +31,25 @@ for neuron = 1:n_neurons
     % check the correlation between the two PSTHs as an upper bound for
     % model accuracy
     psth_corr_mat = corrcoef(firingRates_odds(neuron, :), firingRates_even(neuron, :));
-    neuron_consistencies(neuron) = psth_corr_mat(1,2);
+    neuron_consistencies(neuron) = max(0, psth_corr_mat(1,2));
     
     % check the correlation between model prediction and the 2 PSTHs
     % to estimate model accuracy
     model_accuracy_1_mat = corrcoef(model_predictions_mat(neuron, :), firingRates_odds(neuron, :));
     model_accuracy_2_mat = corrcoef(model_predictions_mat(neuron, :), firingRates_even(neuron, :));
-    model_accuracies(neuron) = mean([model_accuracy_1_mat(1,2), model_accuracy_2_mat(1,2)]);
+    model_accuracies(neuron) = max(0, mean([model_accuracy_1_mat(1,2), model_accuracy_2_mat(1,2)]));
 
 end
 
 figure()
 hold on
-scatter(neuron_consistencies, model_accuracies, 15, 'r', 'filled', 'o');
+scatter(neuron_consistencies, model_accuracies, 100, color, 'Filled', 'o');
 text(neuron_consistencies, model_accuracies, string(cells_labels));
 
-plot([0, 1], [0, 1], "LineWidth", 1.5, "Color", [.2, .2, .2])
+plot([0, 1], [0, 1], '--', "LineWidth", 1.5, "Color", [.6, .6, .6])
+pbaspect([1 1 1])
+c = colorbar('Ticks', []);
+c.Label.String = 'Holographic Activation';
 
 xlabel("split PSTHs Correlation");
 ylabel("Model-PSTHs Correlation");

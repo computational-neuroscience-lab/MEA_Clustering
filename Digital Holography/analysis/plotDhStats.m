@@ -1,9 +1,9 @@
 close all
 load(getDatasetMat, 'dh_models', 'dh_stats')
 
-activation = dh_stats.activationSingle(dh_models.isModeled);
-accuracy = dh_models.accuracies(dh_models.isModeled);
-labels = string(find(dh_models.isModeled));
+activation = dh_stats.singles.activation;
+accuracy = dh_stats.test.activation;
+labels = string(1:numel(dh_stats.singles.activation));
 
 figure()
 scatter(activation, accuracy, 'Filled')

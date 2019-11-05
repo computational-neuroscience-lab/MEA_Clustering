@@ -17,9 +17,10 @@ for i = 1:size(rfs, 2)
     plot(x, y, 'Color', colors(i, :), 'LineWidth', 1.5)
 end
 
-xlim([(x_size*.3), (x_size*.7)])
-ylim([(y_size*.3), (y_size*.7)])
-set(gca,'XTickLabel',[]);
-set(gca,'YTickLabel',[]);
+xlim([(x_size*.2), (x_size*.8)])
+ylim([(y_size*.2), (y_size*.8)])
+% set(gca,'XTickLabel',[]);
+% set(gca,'YTickLabel',[]);
+daspect([1 1 1])
 
 title('receptive field')

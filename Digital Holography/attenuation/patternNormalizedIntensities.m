@@ -1,4 +1,4 @@
-function Is = pattern_intensities(xs, ys)
+function Is = patternNormalizedIntensities(xs, ys)
 % Light intensity compensation used to assure
 % equal intensity for each spot in the pattern
 
