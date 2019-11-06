@@ -1,7 +1,8 @@
-% function extractDH(expId)
+function extractDH(expId, dh_dt_max)
 
-expId = '20190603_grid';
-dh_dt_max = 4;
+if ~exist('dh_dt_max', 'var')
+    dh_dt_max = 4;
+end
 
 % input paths
 expId = char(expId);
