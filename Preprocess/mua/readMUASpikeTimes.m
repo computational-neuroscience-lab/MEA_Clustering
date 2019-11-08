@@ -15,7 +15,7 @@ for i_channel = 1:n_channels
     dataset_id = ['elec_' num2str(i_channel - 1)];
     
     spikes = h5read(char(results_file), [spikes_dataset '/' dataset_id]);
-    mua_spikes{mea_id}  = double(spikes(:));
+    mua_spikes{mea_id}  = double(spikes(:)');
     fprintf('\tsaving %s in mea channel %d\n', dataset_id, mea_id);
 end
 fprintf('Extraction Completed\n\n');
