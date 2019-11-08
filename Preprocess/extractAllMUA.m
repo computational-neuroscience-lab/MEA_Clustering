@@ -13,6 +13,7 @@ raw_path = [dataPath() '/' exp_id '/sorted'];
 vars_path = [dataPath() '/' exp_id '/processed'];
 checker_path = [vars_path() '/' 'CheckerBoard'];
 euler_path = [vars_path() '/' 'Euler'];
+sta_path = [vars_path() '/' 'STA'];
 
 raw_file = [raw_path '/CONVERTED.raw'];
 results_file = [raw_path '/CONVERTED/CONVERTED.mua.hdf5'];
@@ -29,7 +30,7 @@ catch
     disp("Spike Times Computed")
 end
 
-% Stim Triggers
+% DMD Triggers
 try
     load([vars_path '/' 'EvtTimes.mat'], 'evtTimes')
     disp("EvtTimes Loaded")
@@ -59,22 +60,26 @@ if any(checker_index)
        mkdir(checker_path)
     end
     
+    if ~exist(sta_path, 'dir')
+       mkdir(sta_path)
+    end
+    
     Frames = evtTimes{checker_index}.evtTimes_begin;
     checkerboard_mat = [stimPath, '/Checkerboard/checkerboard.mat'];
     [check_begin_time_20khz, check_end_time_20khz] = getCheckerboardRepetitions(Frames, checkerboard_mat);
     save([tmpPath() '/' 'Checkerboard_RepetitionTimes.mat'], 'check_begin_time_20khz', 'check_end_time_20khz')
     movefile([tmpPath() '/' 'Checkerboard_RepetitionTimes.mat'], checker_path)
     
+    % STA
+    save([tmpPath() '/' 'Frames.mat'], 'Frames')
+    save([tmpPath() '/' 'muaSpikeTimes.data'], 'SpikeTimes')
+    movefile([tmpPath() '/' 'Frames.mat'], sta_path)
+    movefile([tmpPath() '/' 'muaSpikeTimes.data'], sta_path)
+    
     % Test Checkerboard
     figure
     plotRaster(mea_channels(1:10), SpikeTimes, check_begin_time_20khz, check_end_time_20khz, meaRate)
     suptitle("CheckerBoard Raster")
-        
-    % Spike Sorting Repetitions
-    rep_begin_time{1} = check_begin_time_20khz;
-    rep_end_time{1} = check_end_time_20khz;
-    save([tmpPath() '/' 'CONVERTED.stim'], 'rep_begin_time', 'rep_end_time')
-    movefile([tmpPath() '/' 'CONVERTED.stim'], vars_path)
 end
 
 % Euler Repetitions
@@ -108,12 +113,3 @@ if any(euler_index)
     save([tmpPath() '/' 'CONVERTED.stim'], 'rep_begin_time', 'rep_end_time')
     movefile([tmpPath() '/' 'CONVERTED.stim'], vars_path)
 end
-
-% STA
-save([tmpPath() '/' 'Frames.mat'], 'Frames')
-save([tmpPath() '/' 'SpikeTimes.data'], 'SpikeTimes')
-
-movefile([tmpPath() '/' 'Frames.mat'], [vars_path '/' 'STA'])
-movefile([tmpPath() '/' 'SpikeTimes.data'], [vars_path '/' 'STA'])
-
-
