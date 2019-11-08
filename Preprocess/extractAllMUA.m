@@ -67,7 +67,7 @@ if any(checker_index)
     
     % Test Checkerboard
     figure
-    plotRaster(100:110, SpikeTimes, check_begin_time_20khz, check_end_time_20khz, meaRate)
+    plotRaster(mea_channels(1:10), SpikeTimes, check_begin_time_20khz, check_end_time_20khz, meaRate)
     suptitle("CheckerBoard Raster")
         
     % Spike Sorting Repetitions
@@ -94,12 +94,12 @@ if any(euler_index)
     figure
     alfa = .1;
     n_bins = round((rep_end_time_20khz(1) - rep_begin_time_20khz(1)) / (tBin*meaRate));
-    [psth, xpsth, ~, ~] = doSmoothPSTH(SpikeTimes, rep_begin_time_20khz, tBin*meaRate, n_bins, meaRate, 1:numel(SpikeTimes), alfa);
+    [psth, xpsth, ~, ~] = doSmoothPSTH(SpikeTimes, rep_begin_time_20khz, tBin*meaRate, n_bins, meaRate, mea_channels, alfa);
     plot(xpsth, psth)
     suptitle("Euler Smooth PSTH")
 
     figure
-    plotRaster(1:10, SpikeTimes, rep_begin_time_20khz, rep_end_time_20khz, meaRate)
+    plotRaster(mea_channels(1:10), SpikeTimes, rep_begin_time_20khz, rep_end_time_20khz, meaRate)
     suptitle("Euler Raster")
     
     % Spike Sorting Repetitions
