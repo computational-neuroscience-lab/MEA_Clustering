@@ -60,7 +60,7 @@ if any(checker_index)
     end
     
     Frames = evtTimes{checker_index}.evtTimes_begin;
-    checkerboard_mat = strcat(stimPath, '/Checkerboard/checkerboard.mat');
+    checkerboard_mat = [stimPath, '/Checkerboard/checkerboard.mat'];
     [check_begin_time_20khz, check_end_time_20khz] = getCheckerboardRepetitions(Frames, checkerboard_mat);
     save([tmpPath() '/' 'Checkerboard_RepetitionTimes.mat'], 'check_begin_time_20khz', 'check_end_time_20khz')
     movefile([tmpPath() '/' 'Checkerboard_RepetitionTimes.mat'], checker_path)
@@ -83,7 +83,7 @@ if any(euler_index)
        mkdir(euler_path)
     end
     
-    load(strcat(vars_path,'Euler/Euler_Stim.mat'), 'euler')
+    load([euler_path '/Euler_Stim.mat'], 'euler')
     euler_evtTime = evtTimes{euler_index}.evtTimes_begin;
     euler_n_steps = length(euler);
     [rep_begin_time_20khz, rep_end_time_20khz] = getConsecutiveStimRepetitions(euler_evtTime, euler_n_steps);
