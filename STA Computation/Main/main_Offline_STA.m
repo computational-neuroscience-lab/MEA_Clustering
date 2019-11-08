@@ -93,9 +93,9 @@ end
 if ~is_one_file_per_cell % Save result for ALL channels computed
     STAs = treated.STA;
     Nspks = treated.Nspk;
-    
-    results_save_path = [spikes_file '_STA_' int2str(IS.Nlatency) 'TimeBins.mat'];
-    save(results_save_path,'STAs','Nspks');
+    save([tmpPath() 'Sta.mat'], 'STAs', 'Nspks');
+    [sta_folder, ~, ~] = fileparts(spikes_file);
+    movefile([tmpPath() 'Sta.mat'], sta_folder);
 end
 
 fprintf('Computation is finished \n')
