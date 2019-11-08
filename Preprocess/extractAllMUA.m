@@ -2,39 +2,30 @@
 
 exp_id = '20191011_grid';
 exp_id = char(exp_id);
-raw_path = [dataPath(), '/' exp_id '/sorted/CONVERTED'];
-vars_path = [dataPath(), '/' exp_id '/processed'];
-results_suffix = '';
+mea_channels = [1:126 129:254];
 
 % Tests Params
 meaRate = 20000; % Hz
 tBin = 0.05;% s
 
 % File Paths
-raw_file = [raw_path '.raw'];
-templates_file = [raw_path '/CONVERTED.templates' results_suffix '.hdf5'];
-results_file = [raw_path '/CONVERTED.result' results_suffix, '.hdf5'];
+raw_path = [dataPath(), '/' exp_id '/sorted'];
+vars_path = [dataPath(), '/' exp_id '/processed'];
+
+raw_file = [raw_path '/CONVERTED.raw'];
+results_file = [raw_path '/CONVERTED/CONVERTED.mua.hdf5'];
 stims_order_file = [vars_path '/' 'stims_order.txt'];
 
 % Spike Times
-try
-    load([vars_path '/' 'SpikeTimes.mat'], 'SpikeTimes')
-    disp("Spike Times Loaded")
-catch
-    SpikeTimes = readSpikeTimes(results_file);
-    save([tmpPath() '/' 'SpikeTimes.mat'], 'SpikeTimes')
-    movefile([tmpPath()  '/' 'SpikeTimes.mat'], vars_path)
-    disp("Spike Times Computed")
-end
-
-% Tags
-try
-    Tags = readTags(templates_file);
-    save([tmpPath() '/'  'Tags.mat'], 'Tags')
-    movefile([tmpPath()  '/' 'Tags.mat'], vars_path)
-catch
-   disp("WARNING: Tags not found")
-end
+% try
+%     load([vars_path '/' 'muaSpikeTimes.mat'], 'SpikeTimes')
+%     disp("Spike Times Loaded")
+% catch
+%     SpikeTimes = readMUASpikeTimes(results_file, mea_channels);    
+%     save([tmpPath() '/' 'SpikeTimes.mat'], 'SpikeTimes')
+%     movefile([tmpPath()  '/' 'SpikeTimes.mat'], vars_path)
+%     disp("Spike Times Computed")
+% end
 
 % Stim Triggers
 try
@@ -44,10 +35,12 @@ catch
     try
         load([vars_path '/' 'StimChannel_data.mat'], 'stimChannel_data')
     catch
+        disp('reading dmd data...')
         stimChannel_data = extractDataDMD(raw_file);
         save([tmpPath() '/' 'StimChannel_data.mat'], 'stimChannel_data', '-v7.3');
         movefile([tmpPath() '/' 'StimChannel_data.mat'], vars_path);
     end
+    disp('extracting dmd triggers...')
     evtTimes = extractDMDTriggers(stimChannel_data);
     save([tmpPath() '/' 'EvtTimes.mat'], 'evtTimes')
     movefile([tmpPath() '/' 'EvtTimes.mat'], vars_path)
