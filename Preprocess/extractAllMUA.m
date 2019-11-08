@@ -9,23 +9,25 @@ meaRate = 20000; % Hz
 tBin = 0.05;% s
 
 % File Paths
-raw_path = [dataPath(), '/' exp_id '/sorted'];
-vars_path = [dataPath(), '/' exp_id '/processed'];
+raw_path = [dataPath() '/' exp_id '/sorted'];
+vars_path = [dataPath() '/' exp_id '/processed'];
+checker_path = [vars_path() '/' 'CheckerBoard'];
+euler_path = [vars_path() '/' 'Euler'];
 
 raw_file = [raw_path '/CONVERTED.raw'];
 results_file = [raw_path '/CONVERTED/CONVERTED.mua.hdf5'];
 stims_order_file = [vars_path '/' 'stims_order.txt'];
 
 % Spike Times
-% try
-%     load([vars_path '/' 'muaSpikeTimes.mat'], 'SpikeTimes')
-%     disp("Spike Times Loaded")
-% catch
-%     SpikeTimes = readMUASpikeTimes(results_file, mea_channels);    
-%     save([tmpPath() '/' 'SpikeTimes.mat'], 'SpikeTimes')
-%     movefile([tmpPath()  '/' 'SpikeTimes.mat'], vars_path)
-%     disp("Spike Times Computed")
-% end
+try
+    load([vars_path '/' 'muaSpikeTimes.mat'], 'SpikeTimes')
+    disp("Spike Times Loaded")
+catch
+    SpikeTimes = readMUASpikeTimes(results_file, mea_channels);    
+    save([tmpPath() '/' 'muaSpikeTimes.mat'], 'SpikeTimes')
+    movefile([tmpPath()  '/' 'muaSpikeTimes.mat'], vars_path)
+    disp("Spike Times Computed")
+end
 
 % Stim Triggers
 try
@@ -53,11 +55,15 @@ euler_index = contains(stims_order, 'EULER');
 
 % Checkerboard Repetitions
 if any(checker_index)
+    if ~exist(checker_path, 'dir')
+       mkdir(checker_path)
+    end
+    
     Frames = evtTimes{checker_index}.evtTimes_begin;
     checkerboard_mat = strcat(stimPath, '/Checkerboard/checkerboard.mat');
     [check_begin_time_20khz, check_end_time_20khz] = getCheckerboardRepetitions(Frames, checkerboard_mat);
     save([tmpPath() '/' 'Checkerboard_RepetitionTimes.mat'], 'check_begin_time_20khz', 'check_end_time_20khz')
-    movefile([tmpPath() '/' 'Checkerboard_RepetitionTimes.mat'], [vars_path '/' 'CheckerBoard'])
+    movefile([tmpPath() '/' 'Checkerboard_RepetitionTimes.mat'], checker_path)
     
     % Test Checkerboard
     figure
@@ -73,12 +79,16 @@ end
 
 % Euler Repetitions
 if any(euler_index)
+    if ~exist(euler_path, 'dir')
+       mkdir(euler_path)
+    end
+    
     load(strcat(vars_path,'Euler/Euler_Stim.mat'), 'euler')
     euler_evtTime = evtTimes{euler_index}.evtTimes_begin;
     euler_n_steps = length(euler);
     [rep_begin_time_20khz, rep_end_time_20khz] = getConsecutiveStimRepetitions(euler_evtTime, euler_n_steps);
     save([tmpPath() '/' 'Euler_RepetitionTimes.mat'], 'rep_begin_time_20khz', 'rep_end_time_20khz')
-    movefile([tmpPath() '/' 'Euler_RepetitionTimes.mat'], [var_path '/' 'Euler'])
+    movefile([tmpPath() '/' 'Euler_RepetitionTimes.mat'], euler_path)
 
     % Test Euler
     figure
