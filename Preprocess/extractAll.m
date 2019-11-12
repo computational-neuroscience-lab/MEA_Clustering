@@ -1,6 +1,6 @@
 % function extractAll(exp_id)
 
-exp_id = '20191011_grid';
+exp_id = '20140611_monkey';
 exp_id = char(exp_id);
 raw_path = [dataPath(), '/' exp_id '/sorted/CONVERTED'];
 vars_path = [dataPath(), '/' exp_id '/processed'];
@@ -68,7 +68,7 @@ if any(checker_index)
     
     % Test Checkerboard
     figure
-    plotRaster(100:110, SpikeTimes, check_begin_time_20khz, check_end_time_20khz, meaRate)
+    plotRaster(120:130, SpikeTimes, check_begin_time_20khz, check_end_time_20khz, meaRate)
     suptitle("CheckerBoard Raster")
         
     % Spike Sorting Repetitions

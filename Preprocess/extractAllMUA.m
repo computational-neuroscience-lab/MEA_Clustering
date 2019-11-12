@@ -1,6 +1,6 @@
 % function extractAll(exp_id)
 
-exp_id = '20191011_grid';
+exp_id = '20140611';
 exp_id = char(exp_id);
 mea_channels = [1:126 129:254];
 

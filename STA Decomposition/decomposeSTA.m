@@ -11,7 +11,8 @@ for i=1:length(stas)
     else
         
         % filter the sta to remove some noise
-        smoothSTA = smoothSta(stas{i});
+%         smoothSTA = smoothSta(stas{i});
+        smoothSTA = stas{i};
         
         % Fit The ellipses
         staFrame = std(smoothSTA, [], 3);

@@ -1,4 +1,4 @@
-experiments = ["20190821_dh"];
+experiments = ["20140611_monkey"];
 
 for experiment = experiments
     disp(strcat("COMPUTING STA FOR EXPERIMENT ", experiment))

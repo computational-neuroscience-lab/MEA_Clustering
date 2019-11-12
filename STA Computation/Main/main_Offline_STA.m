@@ -95,7 +95,7 @@ if ~is_one_file_per_cell % Save result for ALL channels computed
     Nspks = treated.Nspk;
     save([tmpPath() 'Sta.mat'], 'STAs', 'Nspks');
     [sta_folder, ~, ~] = fileparts(spikes_file);
-    movefile([tmpPath() 'Sta.mat'], sta_folder);
+    movefile([tmpPath() '/' 'Sta.mat'], sta_folder);
 end
 
 fprintf('Computation is finished \n')
