@@ -1,8 +1,15 @@
-function [temporal, spatial, indices, qualityIndices] = decomposeSTA(stas, doPlot)
+function [temporal, spatial, rfs, indices, qualityIndices] = decomposeSTA(stas, doSmoothing, doPlot)
+
+if ~exist('doSmoothing', 'var')
+    doSmoothing = true;
+end
 
 if ~exist('doPlot', 'var')
     doPlot = false;
 end
+
+logical_indices = boolean(zeros(1, length(stas)));
+qualityIndices = zeros(1, length(stas));
 
 for i=1:length(stas)
     
@@ -11,25 +18,28 @@ for i=1:length(stas)
     else
         
         % filter the sta to remove some noise
-%         smoothSTA = smoothSta(stas{i});
-        smoothSTA = stas{i};
+        if doSmoothing
+            smoothSTA = smoothSta(stas{i});
+            staFrame = std(smoothSTA, [], 3);
+        else
+            staFrame = std(stas{i}, [], 3);
+        end
         
         % Fit The ellipses
-        staFrame = std(smoothSTA, [], 3);
         [xEll, yEll, ~, ~] =  fitEllipse(staFrame);
         [isValid, meanRatio] = validateEllipse(xEll, yEll, staFrame);
         
         % extract temporal
         [tSta, ~, ~] = extractTemporalSta(stas{i}, xEll, yEll);
-        
+
         % return structures
         logical_indices(i) = isValid;
+        qualityIndices(i) = meanRatio;
+        
         if isValid
-            qualityIndices(i) = meanRatio;
-            
             temporal(i, :) = tSta;
-            
-            spatial(i) = polyshape(xEll, yEll);
+            spatial(i, :, :) = std(stas{i}, [], 3);
+            rfs(i) = polyshape(xEll, yEll);
         end
         
         % debugging plots

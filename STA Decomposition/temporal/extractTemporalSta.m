@@ -1,10 +1,10 @@
 function [tSta, tSta_in, tSta_out] = extractTemporalSta(sta, xEll, yEll)
 
 % Extract tempor
+[dim_x, dim_y, n_steps] = size(sta);
 tSta_in = [];
 tSta_out = [];
 
-[dim_x, dim_y, dim_t] = size(sta);
 for xi = 1:dim_x
     for yi = 1:dim_y
         if inpolygon(xi, yi, yEll, xEll)
