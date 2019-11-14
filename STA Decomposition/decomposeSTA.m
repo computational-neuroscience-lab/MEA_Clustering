@@ -1,80 +1,44 @@
-function [temporal, spatial, rfs, indices, qualityIndices] = decomposeSTA(stas, doSmoothing, doPlot)
+function [temporal, spatial, rfs, indices] = decomposeSTA(stas, doSmoothing)
 
 if ~exist('doSmoothing', 'var')
     doSmoothing = true;
 end
 
-if ~exist('doPlot', 'var')
-    doPlot = false;
-end
+[n_rows, n_cols, n_steps] = size(stas{1});
+n_cells = numel(stas);
 
-logical_indices = boolean(zeros(1, length(stas)));
-qualityIndices = zeros(1, length(stas));
+temporal = zeros(n_cells, n_steps);
+spatial = zeros(n_cells, n_rows, n_cols);
+rfs(n_cells) = polyshape();
+is_good_sta = boolean(zeros(n_cells, 1));
+
 
 for i=1:length(stas)
+    sta = stas{i};
     
-    if sum(stas{i}(:)) == 0
-        logical_indices(i) = false;
-    else
+    if sum(sta(:)) ~= 0
         
         % filter the sta to remove some noise
         if doSmoothing
-            smoothSTA = smoothSta(stas{i});
-            staFrame = std(smoothSTA, [], 3);
+            spatial_sta = std(smoothSta(sta), [], 3);
         else
-            staFrame = std(stas{i}, [], 3);
+            spatial_sta = std(sta, [], 3);
         end
+        spatial(i, :, :) = spatial_sta;
         
         % Fit The ellipses
-        [xEll, yEll, ~, ~] =  fitEllipse(staFrame);
-        [isValid, meanRatio] = validateEllipse(xEll, yEll, staFrame);
+        [xEll, yEll, ~, ~] =  fitEllipse(spatial_sta);
+        [is_valid, ~] = validateEllipse(xEll, yEll, spatial_sta);
         
-        % extract temporal
-        [tSta, ~, ~] = extractTemporalSta(stas{i}, xEll, yEll);
-
-        % return structures
-        logical_indices(i) = isValid;
-        qualityIndices(i) = meanRatio;
         
-        if isValid
-            temporal(i, :) = tSta;
-            spatial(i, :, :) = std(stas{i}, [], 3);
+        if is_valid
+            is_good_sta(i) = is_valid;
+            temporal(i, :) = extractTemporalSta(sta, xEll, yEll);
             rfs(i) = polyshape(xEll, yEll);
         end
-        
-        % debugging plots
-        if doPlot
-            figure()
-            subplot(1,2,1)
-            imagesc(staFrame)
-            hold on
-            plot(xEll, yEll, "r", "LineWidth", 3)
-            scatter(xCenter, yCenter, "k", "LineWidth", 5)
-            title(strcat("Smoothed Spatial STA (meanRatio = ", string(meanRatio), ")"))
-            
-            subplot(1,2,2)
-            hold on
-            plot(tSta_out, "b")
-            plot(tSta_in, "r", "LineWidth", 2)
-            plot(tSta, "k", "LineWidth", 3)
-            title(strcat("Smoothed Temporal STAs"))
-            
-            % set figure position and scaling
-            ss = get(0,'screensize');
-            width = ss(3);
-            height = ss(4);
-            vert = 800;
-            horz = 1600;
-            set(gcf,'Position',[(width/2)-horz/2, (height/2)-vert/2, horz, vert]);
-            
-            waitforbuttonpress;
-            close
-        end
-        
     end
 end
-indices = find(logical_indices);
-
+indices = find(is_good_sta);
 
 
 

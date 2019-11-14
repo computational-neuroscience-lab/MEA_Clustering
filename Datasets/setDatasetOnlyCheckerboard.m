@@ -21,7 +21,6 @@ spikes = {};
 temporalSTAs = [];
 spatialSTAs = [];
 stas = [];
-RFS = [];
 psths = [];
 
 for i_exp = 1:numel(experiments)
@@ -41,7 +40,7 @@ for i_exp = 1:numel(experiments)
     load(repetitions_mat, "rep_begin", "rep_end")
     load(spikes_mat, "SpikeTimes")
     load(sta_mat, "STAs")
-    
+
     try
         load(tags_mat, "Tags")
     catch
@@ -89,9 +88,8 @@ for i_exp = 1:numel(experiments)
          
     features_list{i_exp} = generateStandardFeatureVec(psth_chunk(good_cells, :), temporal_sta(good_cells, :), rf_areas(good_cells));
     temporalSTAs = [temporalSTAs; normalizeTemporalSTA(temporal_sta(good_cells, :))];
-    spatialSTAs = [spatialSTAs, spatial_sta(good_cells, :, :)];
-    RFS = [RFS, rfs(good_cells)];
-    stas = [stas STAs(good_cells)];
+    spatialSTAs = [spatialSTAs, rfs(good_cells)];
+    stas = [stas, STAs(good_cells)];
     psths = [psths;  psth_chunk(good_cells, :)];
     spikes = [spikes, SpikeTimes(good_cells)];
     
@@ -101,4 +99,4 @@ end
 createEmptyDataset(dataset_name)
 [cellsTable, tracesMat] = buildDatasetTable(experiments, indices_list, features_list);
 save(getDatasetMat, 'cellsTable', 'tracesMat');
-save(getDatasetMat(), 'experiments', 'spikes', 'stas', 'temporalSTAs', 'spatialSTAs', 'RFS', 'psths', 'params', '-append')
+save(getDatasetMat(), 'experiments', 'spikes', 'temporalSTAs', 'spatialSTAs', 'stas', 'psths', 'params', '-append')

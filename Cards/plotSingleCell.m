@@ -1,9 +1,20 @@
 function plotSingleCell(cell_id)
 
-load(getDatasetMat, 'clustersTable');
-cell_N = clustersTable(cell_id).N;
-cell_exp = clustersTable(cell_id).Experiment;
-cell_type = clustersTable(cell_id).Type;
+load(getDatasetMat, 'cellsTable', 'clustersTable');
+load(getDatasetMat, 'spatialSTAs');
+load(getDatasetMat, 'spikes', 'params');
+
+cell_N = cellsTable(cell_id).N;
+cell_exp = char(cellsTable(cell_id).experiment);
+
+if exist('clustersTable', 'var')
+    cell_type = clustersTable(cell_id).Type;
+else
+    cell_type = 'unknown';
+end
+load([dataPath() '/' cell_exp, '/processed/CheckerBoard/Checkerboard_RepetitionTimes.mat'], 'rep_begin', 'rep_end')
+
+
 
 figure('Name', ['Cell_#' char(cell_id)]);
 try
@@ -21,19 +32,25 @@ catch
 end
 
 subplot(2, 2, 1)
-plotPSTH(cell_id);
-title('PSTH');
+% plotPSTH(cell_id);
+plotRaster(cell_id, spikes, rep_begin, rep_end, params.meaRate, 0)
+
+title('Raster');
 
 subplot(2, 2, 2)
-plotMean2Variance(cell_id);
-title('Spiking-Rate Stats');
+plotISICell(cell_id)
+title('ISI');
 
 subplot(2, 2, 3)
 plotTSTAs(cell_id);
 title('STA');
 
 subplot(2, 2, 4)
-plotSSTAs(cell_id);
+imagesc(getSTAFrame(cell_id, true));
+[x, y] = boundary(spatialSTAs(cell_id));
+hold on
+plot(x, y, 'r', 'LineWidth', 3)
+
 title('Receptive Field')
 
 supertitle = {  ['Cell #' num2str(cell_id) '. ' 'Type: ' char(cell_type)];

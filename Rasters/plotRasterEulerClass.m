@@ -10,7 +10,7 @@ for i = indices
     
     expId = cellsTable(i).experiment; 
     repetitionsMat = strcat(dataPath, "/", expId, "/processed/Euler/Euler_RepetitionTimes.mat");
-    load(repetitionsMat, "rep_begin_time_20khz", "rep_end_time_20khz")
+    load(repetitionsMat, "rep_begin", "rep_end")
 
     spike_train = spikes{i};
     spikes_tot = [];

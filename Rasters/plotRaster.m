@@ -23,7 +23,11 @@ for i = 1:numel(cell_indices)
         
         y_spikes_rep = ones(1, length(spikes_rep)) * rowCount;
         
-        scatter(spikes_rep / sampling_rate, y_spikes_rep, point_size, color, 'filled')
+        if point_size == 0
+            scatter(spikes_rep / sampling_rate, y_spikes_rep, 5, color, '.')
+        else
+            scatter(spikes_rep / sampling_rate, y_spikes_rep, point_size, color, 'filled')
+        end
         hold on
     end
         

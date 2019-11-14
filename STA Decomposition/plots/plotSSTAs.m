@@ -17,8 +17,8 @@ for i = 1:size(rfs, 2)
     plot(x, y, 'Color', colors(i, :), 'LineWidth', 1.5)
 end
 
-xlim([(x_size*.2), (x_size*.8)])
-ylim([(y_size*.2), (y_size*.8)])
+% xlim([(x_size*.2), (x_size*.8)])
+% ylim([(y_size*.2), (y_size*.8)])
 % set(gca,'XTickLabel',[]);
 % set(gca,'YTickLabel',[]);
 daspect([1 1 1])
