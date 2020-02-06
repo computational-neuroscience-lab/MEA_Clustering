@@ -41,9 +41,8 @@ for neuron = 1:n_neurons
 
 end
 
-figure()
-hold on
 scatter(neuron_consistencies, model_accuracies, 100, color, 'Filled', 'o');
+hold on
 text(neuron_consistencies, model_accuracies, string(cells_labels));
 
 plot([0, 1], [0, 1], '--', "LineWidth", 1.5, "Color", [.6, .6, .6])

@@ -1,7 +1,7 @@
 function setDatasetOnlyCheckerboard(dataset_name, experiments, accepted_labels, mea_rate, psth_tBin)
 % DATASETNAME = "170614_ABC_25jan";
 % it is the identifier for the given dataset.
-
+ 
 % EXPERIMENTS = {"name_file_exp1", "name_file_exp2", etc...}; 
 % files must be inside the dataPath() folder.
 % dataset is created with the data from selected experiments

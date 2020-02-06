@@ -7,10 +7,10 @@ zero_sequences = sum(logical(TotalBlock) > 0, 1) == 0;
 single_sequences = sum(logical(TotalBlock) > 0, 1) == 1;
 others_sequences = sum(logical(TotalBlock) > 0, 1) > 1;
 
-zero_idx = zero_sequences(sequence2frames)';
-single_idx = single_sequences(sequence2frames)';
+zero_idx = zero_sequences(sequence2frames);
+single_idx = single_sequences(sequence2frames);
 
-others_idx = others_sequences(sequence2frames)';
+others_idx = others_sequences(sequence2frames);
 multi_idx = ~BlockSign(sequence2frames)' & others_idx;
 test_idx = BlockSign(sequence2frames)' & others_idx;
 

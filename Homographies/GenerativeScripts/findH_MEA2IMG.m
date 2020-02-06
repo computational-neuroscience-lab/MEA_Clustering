@@ -1,4 +1,5 @@
 function findH_MEA2IMG(exp_id, img_name, dh_groups)
+l_elec = 30;  % units
 
 % LOAD THE MEA IMAGE
 try
@@ -30,7 +31,6 @@ catch
 end
 
 % COLLECT POINT INTERACTIVELY
-l_elec = 30;  % units
 anchors_image = ones(3, 5);
 anchors_MEA = ones(3, 5);
 for i_point = 1:5

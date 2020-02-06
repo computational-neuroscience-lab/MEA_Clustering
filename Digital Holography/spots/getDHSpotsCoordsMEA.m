@@ -1,10 +1,8 @@
-function spots_coords = getDHSpotsCoordsMEA(experiment, spots_pattern)
+function spots_coords = getDHSpotsCoordsMEA(dh_session_label, spots_pattern)
 
-coordsFile = [dataPath() '/' experiment '/processed/DH/DHCoords.mat'];
-load(coordsFile, 'PatternCoords_MEA');
-
+s = load(getDatasetMat, dh_session_label);
 if exist('spots_pattern', 'var')
-    spots_coords = PatternCoords_MEA(logical(spots_pattern), :);
+    spots_coords = s.(dh_session_label).spots.coords_mea(spots_pattern, :);
 else
-    spots_coords = PatternCoords_MEA;
+    spots_coords = s.(dh_session_label).spots.coords_mea;
 end

@@ -2,7 +2,7 @@ function classesTable = buildClassesTable()
 
 loadDataset();
 
-classNames = getLeafClasses();
+classNames = unique([clustersTable.Type]);
 nClasses = length(classNames);
 
 classesTable = struct(  'name',     cell(1, nClasses), ...
@@ -38,12 +38,10 @@ end
 classesTableNotPruned = classesTable;
 
 % remove pruned
-pruneds = logical(zeros(nClasses, 1));
+pruned = logical(zeros(nClasses, 1));
 for iClass = 1:nClasses
-    if endsWith(classesTable(iClass).name, "_PRUNED.")
-        pruneds(iClass) = true;
-    end
+    pruned(iClass) = endsWith(classesTable(iClass).name, "_PRUNED.");
 end
-classesTable(pruneds) = [];
+classesTable(pruned) = [];
 
 save(getDatasetMat, 'classesTable', 'classesTableNotPruned', '-append');    

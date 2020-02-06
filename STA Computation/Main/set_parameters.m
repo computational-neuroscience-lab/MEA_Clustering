@@ -11,20 +11,17 @@ IS=online_STA_parameters();
 
 %%% Stimulus triggers %%%
 % must contain peak_times or Frames, list of trigger times
-% TRIGGERS_FILE TO BE PROVIDED
 
 %%% Stimulus checkerboard file (must be a .mat file. Use convert_stim_from_binary_file to convert a binary file into .mat) %%%
 % must contain _nsqXXXX_ with XXXX the number of quarres per screen side during display
 StimFileFormat =   'binary'; %'.mat'; %
-IS.StimFilePath = [stimPath '/Checkerboard/binarysource1000Mbits']; 
+IS.StimFilePath = [stimPath '/Checkerboard/binarysource1000Mbits'];
 
 %%% Spike time files %%%
 % can be a .data containing SpikeTimes, cell of spike times for each cell, OR 1 .mat data for each cell containing SpikeTime, list of the spike times
-% SPIKES_FILE TO BE PROVIDED
-
+    
 %%% Channels to analyse %%%
-% N_CELLS TO BE PROVIDED
-Channels = 1:n_cells; %number of cells
+Channels = [1, 10, 15, 16];
 
 IS.Nlatency=21;  % by default 21 different time bins (-20 : 0)   
 IS.NCheckerboard1= 51; %number of squarres per side in the checkerboard. 20 by default.

@@ -1,8 +1,8 @@
 function indices = expIndices(expId)
 
-load(getDatasetMat(), 'clustersTable');
+load(getDatasetMat(), 'cellsTable');
 
-expIds = [clustersTable.Experiment];
+expIds = [cellsTable.experiment];
 indices = strcmp(expIds, expId);
 
 

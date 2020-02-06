@@ -1,5 +1,5 @@
 function rs = getFiringRates(spikes, time_window, rep_begins, time_resolution, kernel_type)
-% Implentation of smooth casual firing rates with Half Wave Rectification 
+% Implentation of smooth causal firing rates with Half Wave Rectification 
 % (see Theoretical Neuroscience - Dayan & Abbott, chapter 1, page 15)
 % rs: firing rates as a 2D [n_repetitions x time_steps] matrix
 

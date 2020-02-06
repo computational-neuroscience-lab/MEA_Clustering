@@ -1,20 +1,30 @@
-function extractDH(expId, dh_dt_max)
+% Extract all the info about the different DH sessions,
+% Pool the repetitions and combine them in an unique set of triggers.
 
-if ~exist('dh_dt_max', 'var')
-    dh_dt_max = 4;
+% PARAMS
+exp_id = '20191011_grid';
+dh_sessions = 3;
+dh_reps_label = 'DHGridWild';
+combine_as = 'STACK';  % CONCAT or STACK
+
+if strcmp(combine_as, 'CONCAT')
+    combine_patterns = @concatPatterns;
+    combine_coords = @concatSpots;
+elseif strcmp(combine_as, 'STACK')
+    combine_patterns = @stackPatterns;
+    combine_coords = @checkEqualsSpots;
+else
+    error('combine function not recognized: it must be CONCAT or STACK')
 end
 
-% input paths
-expId = char(expId);
-raw_file_path = [dataPath() '/' expId '/sorted/CONVERTED.raw'];
-
-% output paths
-dh_folder = [dataPath() '/' expId '/processed/DH'];
+% paths
+raw_file_path = [dataPath() '/' exp_id '/sorted/CONVERTED.raw'];
+dh_folder = [dataPath() '/' exp_id '/processed/DH'];
 
 data_file = 'DHChannel_data.mat';
 triggers_file = 'DHTimes.mat';
-repetitions_file = 'DHRepetitions.mat';
-coords_file = 'DHCoords.mat';
+repetitions_file = ['DHRepetitions' dh_reps_label '.mat'];
+coords_file = ['DHCoords' dh_reps_label '.mat'];
 
 % Stim Triggers
 try
@@ -40,84 +50,67 @@ end
 % multiSpots_reps: repetition of repeated multi-spot patterns
 % multiSpots_uniques: times of non-repeated multi-spot patterns
 
-zero_begin_time = [];
-zero_end_time = [];
-zero_frames = [];
+all_0_reps = cell(numel(dh_sessions), 1);
+all_1_reps = cell(numel(dh_sessions), 1);
+all_N_reps = cell(numel(dh_sessions), 1);
+all_T_reps = cell(numel(dh_sessions), 1);
+all_full_reps = cell(numel(dh_sessions), 1);
 
-single_begin_time = [];
-single_end_time = [];
-single_frames = [];
+coords_dmd = cell(numel(dh_sessions), 1);
+coords_2ph = cell(numel(dh_sessions), 1);
+coords_mea = cell(numel(dh_sessions), 1);
 
-multi_begin_time = [];
-multi_end_time = [];
-multi_frames = [];
-
-test_begin_time = [];
-test_end_time = [];
-test_frames = [];
-
-PatternCoords_Laser = [];
-PatternCoords_MEA = [];
-PatternCoords_Img = [];
-
-for i_dht = 1:numel(dhTimes)
-    framesFile = [dataPath() '/' expId '/processed/DH/DHFrames_' num2str(i_dht) '.mat'];
-
+for i_n = 1:numel(dh_sessions)
+    i_dht = dh_sessions(i_n);
+    
     try
         % get the repetitions from different fields of view
         fprintf('Triggers set #%i:\n', i_dht);
-        StimBegin = dhTimes{i_dht}.evtTimes_begin;
-        StimEnd = dhTimes{i_dht}.evtTimes_end;        
-        [zero_reps, single_reps, multi_reps, test_reps, all_reps] = getDHSpotsRepetitions(StimBegin, StimEnd, framesFile);
-
-        % stack them together
-        [n_spots, n_reps] = size(zero_frames);
-        [n_new_spots, n_new_reps] = size(zero_reps.frames);
-        zero_frames(n_spots+1 : n_spots+n_new_spots, n_reps+1 : n_reps+n_new_reps) = zero_reps.frames;
-        zero_begin_time = [zero_begin_time, zero_reps.rep_begin];
-        zero_end_time = [zero_end_time, zero_reps.rep_end];
-        
-        [n_spots, n_reps] = size(single_frames);
-        [n_new_spots, n_new_reps] = size(single_reps.frames);
-        single_frames(n_spots+1 : n_spots+n_new_spots, n_reps+1 : n_reps+n_new_reps) = single_reps.frames;
-        single_begin_time = [single_begin_time, single_reps.rep_begin];
-        single_end_time = [single_end_time, single_reps.rep_end];
-        
-        [n_spots, n_reps] = size(multi_frames);
-        [n_new_spots, n_new_reps] = size(multi_reps.frames);
-        multi_frames(n_spots+1 : n_spots+n_new_spots, n_reps+1 : n_reps+n_new_reps) = multi_reps.frames;
-        multi_begin_time = [multi_begin_time, multi_reps.rep_begin];
-        multi_end_time = [multi_end_time, multi_reps.rep_end];
-        
-        [n_spots, n_reps] = size(test_frames);
-        [n_new_spots, n_new_reps] = size(test_reps.frames);
-        test_frames(n_spots+1 : n_spots+n_new_spots, n_reps+1 : n_reps+n_new_reps) = test_reps.frames;
-        test_begin_time = [test_begin_time, test_reps.rep_begin];
-        test_end_time = [test_end_time, test_reps.rep_end];
-        
-        fprintf('\tDH repetitions generated\n\n');
-        
-        % stack the points coords
-        
-        % Points in laser coords are used to compute the light intensities
-        load(framesFile, "PatternMicron", "PatternImage");
-        PatternCoords_Laser = [PatternCoords_Laser; PatternMicron];
-        PatternCoords_Img = [PatternCoords_Img; PatternImage];
-        
+        frames_file = [dh_folder '/DHFrames_' num2str(i_dht) '.mat'];
+     
+        [reps_0, reps_1, reps_N, reps_T, reps_full] = getDHSpotsRepetitions(dhTimes{i_dht}.evtTimes_begin, ...
+                                                                    dhTimes{i_dht}.evtTimes_end, ...
+                                                                    frames_file);
+        all_0_reps{i_n} = reps_0;
+        all_1_reps{i_n} = reps_1;
+        all_N_reps{i_n} = reps_N;
+        all_T_reps{i_n} = reps_T;
+        all_full_reps{i_n} = reps_full;
+                
+        % Points in 2-Photons coords are used to compute the light intensities
         % Points in MEA coords are used to get their relative positions
-        h = getHomography(['img' num2str(i_dht)], 'mea', expId);
-        PatternCoords_MEA = [PatternCoords_MEA; transformPointsV(h, PatternImage)];
+        load(frames_file, "PatternMicron", "PatternImage");
+        h_img2mea = getHomography(['img' num2str(i_dht)], 'mea', exp_id);
+        coords_2ph{i_n} = PatternMicron;
+        coords_dmd{i_n} = PatternImage;
+        coords_mea{i_n} = transformPointsV(h_img2mea, PatternImage);
+
+        fprintf('\tDH repetitions generated\n\n');
     catch e
         fprintf('\tnot possible to generate the DH repetitions:\n');
         fprintf('\t%s: %s\n', e.identifier, e.message);
     end
 end
 
+% combine patterns
+[zero_frames, zero_begin_time, zero_end_time]       = combine_patterns(all_0_reps);
+[single_frames, single_begin_time, single_end_time] = combine_patterns(all_1_reps);
+[multi_frames, multi_begin_time, multi_end_time]    = combine_patterns(all_N_reps);
+[test_frames, test_begin_time, test_end_time]       = combine_patterns(all_T_reps);
+[all_frames, all_begin_time, all_end_time]       = combine_patterns(all_full_reps);
+
+% combine spot coords
+PatternCoords_Img = combine_coords(coords_dmd);
+PatternCoords_Laser = combine_coords(coords_2ph);
+PatternCoords_MEA = combine_coords(coords_mea);
+
 % Save the repetitions
 save([tmpPath(), '/' repetitions_file], "zero_begin_time", "zero_end_time", "zero_frames");
 save([tmpPath(), '/' repetitions_file], "single_begin_time", "single_end_time", "single_frames", "-append");
 save([tmpPath(), '/' repetitions_file], "multi_begin_time", "multi_end_time", "multi_frames", "-append");
 save([tmpPath(), '/' repetitions_file], "test_begin_time", "test_end_time", "test_frames", "-append");
+save([tmpPath(), '/' repetitions_file], "all_begin_time", "all_end_time", "all_frames", "-append");
+save([tmpPath(), '/' repetitions_file], "dh_sessions", "-append");
 save([tmpPath(), '/' coords_file], "PatternCoords_Laser", "PatternCoords_Img");
 save([tmpPath(), '/' coords_file], "PatternCoords_MEA", "-append");
 

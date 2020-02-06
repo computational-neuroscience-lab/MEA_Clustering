@@ -1,10 +1,8 @@
-function spots_coords = getDHSpotsPositions(experiment, spots_pattern)
+function spots_coords = getDHSpotsPositions(dh_session_label, spots_pattern)
 
-coordsFile = [dataPath() '/' experiment '/processed/DH/DHCoords.mat'];
-load(coordsFile, 'PatternCoords_Laser');
-
+s = load(getDatasetMat, dh_session_label);
 if exist('spots_pattern', 'var')
-    spots_coords = PatternCoords_Laser(logical(spots_pattern), :);
+    spots_coords = s.(dh_session_label).spots.coords_laser(spots_pattern, :);
 else
-    spots_coords = PatternCoords_Laser;
+    spots_coords = s.(dh_session_label).spots.coords_laser;
 end

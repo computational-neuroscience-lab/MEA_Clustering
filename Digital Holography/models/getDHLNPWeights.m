@@ -1,8 +1,9 @@
-function [ws_norm, a, b] = getDHLNPWeights(i_cell, model)
+function [ws_norm, a, b] = getDHLNPWeights(session_label, model, i_cell)
 
-load(getDatasetMat, 'dh_models');
-ws = dh_models.LNP.ws(model, :);
-b = dh_models.LNP.b(model);
+dh_session_struct = load(getDatasetMat, session_label);
+
+ws = dh_session_struct.(session_label).(model).ws;
+b = dh_session_struct.(session_label).(model).b;
 
 a = max(abs(ws), [], 2);
 ws_norm = ws ./ repmat(a, 1, size(ws,2));

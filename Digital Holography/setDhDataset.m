@@ -1,48 +1,69 @@
 clear
 
-% parameters
-expId = '20170614';
-spot_attenuation_func = @getDHFrameNormIntensities;
-
-% Load Data
-repetitionsFile = [dataPath() '/' expId '/processed/DH/DHRepetitions.mat'];
-load(getDatasetMat(), "spikes");
-load(getDatasetMat(), "params");
-n_cells = numel(spikes);
-
+% dataset parameters
+session_label = 'DHGridBlock';      % label of the dataset that will be generated
+reps_labels = 'DHGridBlock';    % label of the session from which to get the repetitions
+spot_attenuation_func = @getDHFrameIntensities;
+datasets = {'zero', 'single', 'multi', 'test', 'all'};
 
 % PSTH parameters
-dh.t_bin = 0.5; % s
-dh.period = 0.5; % s
-dh.bin_init = 1;
-dh.bin_end = 1;
+trigger_suffix = '_begin_time';  % '_begin_time' or '_end_time'
+dh_dataset.params.t_bin = 0.5; % s
+dh_dataset.params.period = 0.5; % s
+dh_dataset.params.bin_init = 1;
+dh_dataset.params.bin_end = 1;
 
-n_bins = floor(dh.period / dh.t_bin);
-bin_size = dh.t_bin * params.meaRate;
+% Load Data
+load(getDatasetMat(), 'experiments')
+load(getDatasetMat(), 'spikes');
+load(getDatasetMat(), 'params');
+if numel(experiments) > 1
+    error('you cannot analyze DH data for a dataset with multiple manips')
+end
+expId = char(experiments{1});
+n_cells = numel(spikes);
+n_bins = floor(dh_dataset.params.period / dh_dataset.params.t_bin);
+bin_size = dh_dataset.params.t_bin * params.meaRate;
 
-% Iterate over the different types of stimulatione sequences
-patterns_types = ["zero", "singles", "multi", "test"];
-patterns_begin_time = ["zero_begin_time", "single_begin_time",  "multi_begin_time",  "test_begin_time"];
-patterns_frames = ["zero_frames", "single_frames", "multi_frames", "test_frames"];
+repetitionsFile = [dataPath() '/' expId '/processed/DH/DHRepetitions' reps_labels '.mat'];
+load(repetitionsFile, 'dh_sessions');
 
-for i_patt = 1:numel(patterns_types)
+coordsFile = [dataPath() '/' expId '/processed/DH/DHCoords' reps_labels '.mat'];
+load(coordsFile, 'PatternCoords_MEA');
+load(coordsFile, 'PatternCoords_Laser');
+load(coordsFile, 'PatternCoords_Img');
+
+% save spots
+dh_dataset.spots.coords_mea =  PatternCoords_MEA;
+dh_dataset.spots.coords_laser =  PatternCoords_Laser;
+dh_dataset.spots.coords_img =  PatternCoords_Img;
+dh_dataset.sessions = dh_sessions;
+data.(session_label) = dh_dataset;
+save(getDatasetMat, '-struct', 'data', "-append")
+
+% save repetitions
+for i_data = 1:numel(datasets)
     
-    pattern_type = patterns_types(i_patt);
-    repetitions = load(repetitionsFile, patterns_begin_time(i_patt));
-    repetitions = repetitions.(patterns_begin_time(i_patt));
+    dataset_label = datasets{i_data};
+    frames_label = [dataset_label '_frames'];
+    trigger_label = [dataset_label trigger_suffix];
+
+    r = load(repetitionsFile, trigger_label);
+    repetitions = r.(trigger_label);
     
-    rep_frames = load(repetitionsFile, patterns_frames(i_patt));
-    rep_frames = rep_frames.(patterns_frames(i_patt));
+    s = load(repetitionsFile, frames_label);
+    rep_frames = s.(frames_label);
 
     % Get Repetitions
     n_patterns = numel(repetitions);
     
     % Compute input intensities
-    dh.stimuli.(pattern_type) = spot_attenuation_func(expId, rep_frames);
+    dh_dataset.stimuli.(dataset_label) = spot_attenuation_func(session_label, rep_frames);
 
     % Compute all the responses for each pattern
-    dh.responses.(pattern_type).firingRates = zeros(n_cells, n_patterns);
-    dh.responses.(pattern_type).spikeCounts = cell(n_cells, n_patterns);
+    dh_dataset.responses.(dataset_label).firingRates = zeros(n_cells, n_patterns);
+    dh_dataset.responses.(dataset_label).spikeCounts = cell(n_cells, n_patterns);
+    dh_dataset.repetitions.(dataset_label) = repetitions';
     
     for i_p = 1:n_patterns
         % Responses to DH stim
@@ -50,12 +71,16 @@ for i_patt = 1:numel(patterns_types)
         
         if ~isempty(r_times)
             [psth, ~, ~, responses] = doPSTH(spikes, r_times, bin_size, n_bins, params.meaRate, 1:n_cells);
-            dh.responses.(pattern_type).firingRates(:, i_p) = psth;
+            dh_dataset.responses.(dataset_label).firingRates(:, i_p) = psth;
             for i_cell = 1:n_cells
-                dh.responses.(pattern_type).spikeCounts(i_cell, i_p) = {responses(i_cell, :)};
+                dh_dataset.responses.(dataset_label).spikeCounts(i_cell, i_p) = {responses(i_cell, :)};
             end
         end
     end
 end
 
-save(getDatasetMat, "dh", "-append")
+dh_dataset.sessions = dh_sessions;
+data.(session_label) = dh_dataset;
+save(getDatasetMat, '-struct', 'data', "-append")
+
+computeDHActivation(session_label)

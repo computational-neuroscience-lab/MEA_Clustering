@@ -1,3 +1,5 @@
+% raster for several cells, responding to several repetitions of a stim
+
 function rowCount = plotRaster(cell_indices, SpikeTimes, rep_begin_time, rep_end_time, sampling_rate, point_size)
 
 if ~exist('point_size', 'var')

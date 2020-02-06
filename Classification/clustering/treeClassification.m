@@ -40,6 +40,7 @@ global cluster_split_staSNR;
 global clustersTable;
 global PCAs;
 
+
 %-------------------------- PARAMETERS ----------------------------------%
 
 if ~exist('clusters_params','var') || isempty(clusters_params)
@@ -74,6 +75,7 @@ cluster_min_staSNR =  clusters_params.min_sta_SNR;
 cluster_split_size = clusters_params.split_size;
 cluster_split_psthSNR = clusters_params.split_psth_SNR;
 cluster_split_staSNR = clusters_params.split_sta_SNR;
+
 
 %-----------------------------STRUCTURES---------------------------------%
 
@@ -120,6 +122,7 @@ for i = 1:nClasses
     classLogicals = labels2cells(label);
     classesLogicals(i) = {classLogicals};
 end
+
 
 %-------------------------DO CLUSTERING----------------------------------%
 

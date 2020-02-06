@@ -1,8 +1,8 @@
-function spots_coords_image = getDHSpotsCoordsImg(experiment, fv_id, spots_pattern)
+function spots_coords = getDHSpotsCoordsImg(dh_session_label, spots_pattern)
 
-load([dataPath '/' experiment '/processed/DH/DHFrames_' num2str(fv_id) '.mat'], 'PatternImage');
+s = load(getDatasetMat, dh_session_label);
 if exist('spots_pattern', 'var')
-    spots_coords_image = PatternImage(spots_pattern, :);
+    spots_coords = s.(dh_session_label).spots.coords_img(spots_pattern, :);
 else
-    spots_coords_image = PatternImage;
+    spots_coords = s.(dh_session_label).spots.coords_img;
 end

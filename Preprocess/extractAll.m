@@ -1,8 +1,8 @@
 
 % Parameters
-exp_id = '20140611_monkey';
+exp_id = '20191011_grid';
 sorted = true;
-results_suffix = '';
+results_suffix = '-final';
 mea_rate = 20000; % Hz
 
 % Plots Params
