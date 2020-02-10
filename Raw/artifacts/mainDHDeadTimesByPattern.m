@@ -47,14 +47,15 @@ end
 
 % Compute Artifact Residuals
 for dh_label = dh_labels_to_process
+    
     % for each dh_session compute the residuals if they do not exist yet
     if ~isfield(stim_residuals, dh_label)
         s = load(getDatasetMat, dh_label);
+        
         pattern_labels = fieldnames(s.(dh_label).repetitions);
         for i_p = 1:numel(pattern_labels)
             p_label = pattern_labels{i_p};
             stim_triggers = s.(dh_label).repetitions.(p_label);
-            
             fprintf('%s patterns:\n', p_label);
             
             elec_residuals = computeElecStimResidual(raw_file, stim_triggers, stim_duration, time_spacing, mea_map, encoding);
@@ -65,16 +66,16 @@ for dh_label = dh_labels_to_process
             stim_residuals.(dh_label).(p_label).dead_init = dead_init;
             stim_residuals.(dh_label).(p_label).dead_end = dead_end;
             
-            for i_patterns = 1:numel(elec_residuals)
-                % Plot Artifact Residual
-                plotMEA()
-                plotDataMEA(elec_residuals{i_patterns}/10, mea_map, 'blue', dead_electrodes)
-
-                % Get Dead Interval around artifact Residuals
-                plotDeadIntervals(dead_init{i_patterns}, dead_end{i_patterns}, mea_residual{i_patterns}, time_spacing, stim_duration, mea_rate);
-                waitforbuttonpress();
-                close all
-            end
+%             for i_patterns = 1:numel(elec_residuals)
+%                 % Plot Artifact Residual
+%                 plotMEA()
+%                 plotDataMEA(elec_residuals{i_patterns}/10, mea_map, 'blue', dead_electrodes)
+% 
+%                 % Get Dead Interval around artifact Residuals
+%                 plotDeadIntervals(dead_init{i_patterns}, dead_end{i_patterns}, mea_residual{i_patterns}, time_spacing, stim_duration, mea_rate);
+%                 waitforbuttonpress();
+%                 close all
+%             end
         end
     end
 end
@@ -82,22 +83,40 @@ end
 save([tmpPath '/' 'dh_residuals.mat'], 'stim_residuals', 'stim_duration', 'time_spacing');
 movefile([tmpPath '/' 'dh_residuals.mat'], residuals_folder);
 
-% 
-%                 % Compute Dead Times for artifact Residuals
-%                 dead_times_artifacts = computeDeadTimes(stim_triggers{i_patterns}, dead_init{i_patterns}, dead_end{i_patterns});
-%                 dead_times = [dead_times; dead_times_artifacts];
-% 
-% % Compute Dead Times on dh session to mask completely:
-% dead_times_covered = zeros(numel(dh_sessions_to_mask), 2);
-% for i_dh = dh_sessions_to_mask
-%     dead_init = dhTimes{i_dh}.evtTimes_begin(1) - time_spacing;
-%     dead_end = dhTimes{i_dh}.evtTimes_end(end) + time_spacing;
-%     dead_times_covered(i_dh, :) =  [dead_init dead_end];
-% end
-% 
-% % Put together and sort all dead times
-% dead_times = [dead_times; dead_times_covered];
-% [~, order] = sort(dead_times(:,1));
-% dead_times = dead_times(order, :);
-% 
-% writematrix(dead_times, dead_times_file,'Delimiter','tab')
+
+% Put all dead times together
+dead_times_artifacts = [];
+
+dh_sessions = fields(stim_residuals);
+for i_dh = 1:numel(dh_sessions)
+    dh_session = dh_sessions{i_dh};
+    dh_struct = load(getDatasetMat, dh_session);
+
+    
+    dh_types = fields(stim_residuals.(dh_session));
+    for i_type = 1:numel(dh_types)
+        dh_type = dh_types{i_type};
+            for i_patt = 1:numel(stim_residuals.(dh_session).(dh_type).dead_init)
+                di = stim_residuals.(dh_session).(dh_type).dead_init{i_patt};
+                de = stim_residuals.(dh_session).(dh_type).dead_end{i_patt};
+                triggs = dh_struct.(dh_session).repetitions.(dh_type){i_patt};
+
+                dead_times_artifacts = [dead_times_artifacts; computeDeadTimes(triggs, di, de)];
+            end
+    end
+end
+
+% Compute Dead Times on dh session to mask completely:
+dead_times_covered = zeros(numel(dh_sessions_to_mask), 2);
+for i_dh = dh_sessions_to_mask
+    dead_init = dhTimes{i_dh}.evtTimes_begin(1) - time_spacing;
+    dead_end = dhTimes{i_dh}.evtTimes_end(end) + time_spacing;
+    dead_times_covered(i_dh, :) =  [dead_init dead_end];
+end
+
+% Put together and sort all dead times
+dead_times = [dead_times_artifacts; dead_times_covered];
+[~, order] = sort(dead_times(:,1));
+dead_times = dead_times(order, :);
+
+writematrix(dead_times, dead_times_file, 'Delimiter', 'tab')
