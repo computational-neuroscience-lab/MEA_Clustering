@@ -5,6 +5,7 @@ exp_id = '20200131_dh';
 
 dh_labels_to_process = ["DHMulti"];
 dh_sessions_to_mask = [];
+pattern_labels = ["single", "multi", "test"];
 
 dead_electrodes = [];
 stim_electrodes = [127 128 255 256];
@@ -52,7 +53,6 @@ for dh_label = dh_labels_to_process
     if ~isfield(stim_residuals, dh_label)
         s = load(getDatasetMat, dh_label);
         
-        pattern_labels = fieldnames(s.(dh_label).repetitions);
         for i_p = 1:numel(pattern_labels)
             p_label = pattern_labels{i_p};
             stim_triggers = s.(dh_label).repetitions.(p_label);
@@ -61,7 +61,6 @@ for dh_label = dh_labels_to_process
             elec_residuals = computeElecStimResidual(raw_file, stim_triggers, stim_duration, time_spacing, mea_map, encoding);
             [mea_residual, dead_init, dead_end] = computeMEAStimResidual([stim_electrodes, dead_electrodes], elec_residuals, time_spacing);
 
-            stim_residuals.(dh_label).(p_label).elec_residuals = elec_residuals;
             stim_residuals.(dh_label).(p_label).mea_residual = mea_residual;
             stim_residuals.(dh_label).(p_label).dead_init = dead_init;
             stim_residuals.(dh_label).(p_label).dead_end = dead_end;
