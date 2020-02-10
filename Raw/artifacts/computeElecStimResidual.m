@@ -10,7 +10,7 @@ for i_s = 1:numel(stim_triggers)
     for rep = stim_reps
         waves = extractDataMEA(raw_file, rep - padding, stim_duration + padding*2, mea_size, encoding);
         waves = reshape(waves, mea_size, stim_duration + padding*2);
-        residuals(i_s) = max(residuals(i_s), abs(waves));
+        residuals{i_s} = max(residuals{i_s}, abs(waves));
     end
     fprintf('\tpattern %i/%i completed...\n', i_s, numel(stim_triggers))
 end
