@@ -24,3 +24,4 @@ for i_rep = 1:n_reps
         snippet = double(data);
     end
 end
+fclose(fid);

@@ -22,6 +22,7 @@ while is_header
         return
     end
 end
+fclose(fid);
 
 % Because there is two characters after the EOH, before the raw data.
 header_size = header_size + 2;

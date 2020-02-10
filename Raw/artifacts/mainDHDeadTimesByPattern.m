@@ -61,6 +61,7 @@ for dh_label = dh_labels_to_process
             elec_residuals = computeElecStimResidual(raw_file, stim_triggers, stim_duration, time_spacing, mea_map, encoding);
             [mea_residual, dead_init, dead_end] = computeMEAStimResidual([stim_electrodes, dead_electrodes], elec_residuals, time_spacing);
 
+            stim_residuals.(dh_label).(p_label).elec_residuals = elec_residuals;
             stim_residuals.(dh_label).(p_label).mea_residual = mea_residual;
             stim_residuals.(dh_label).(p_label).dead_init = dead_init;
             stim_residuals.(dh_label).(p_label).dead_end = dead_end;

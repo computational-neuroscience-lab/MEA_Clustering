@@ -25,3 +25,5 @@ for i_rep = 1:n_reps
     end
     mea_snippets(i_rep, :, :) = reshape(snippet, mea_size, chunk_size);
 end
+
+fclose(fid);
