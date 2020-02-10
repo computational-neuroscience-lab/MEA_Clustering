@@ -22,7 +22,7 @@ mea_file = [dataPath() '/' exp_id '/PositionsMEA'];
 
 % Outputs
 residuals_file = 'dh_residuals.mat';
-residuals_folder = [dataPath(), '/', exp_id, '/processed/DH/artifact_residuals/'];
+residuals_folder = [dataPath(), '/', exp_id, '/processed/DH'];
 dead_times_file = [dataPath(), '/', exp_id, '/sorted/dead_times.txt'];
 
 % Load
@@ -48,22 +48,22 @@ end
 
 % Compute Artifact Residuals
 for dh_label = dh_labels_to_process
-    s = load(getDatasetMat, dh_label);
-    
     for p_label = pattern_labels
-        residual_file = [dh_label '_' p_label '_residuals.mat'];
+        residual_file = [residuals_folder '/' dh_label '_' p_label '_residuals'];
         
-        if ~exist([residuals_folder '/' residual_file], 'file')        
+        if ~exist(residual_file, 'file')
+        
         
             stim_triggers = s.(dh_label).repetitions.(p_label);
             fprintf('%s patterns:\n', p_label);
             
             elec_residuals = computeElecStimResidual(raw_file, stim_triggers, stim_duration, time_spacing, mea_map, encoding);
             [mea_residual, dead_init, dead_end] = computeMEAStimResidual([stim_electrodes, dead_electrodes], elec_residuals, time_spacing);
-            
-            save([tmpPath '/' residual_file], 'elec_residuals', 'mea_residual', 'dead_init', 'dead_end');
-            movefile([tmpPath '/' residual_file], residuals_folder);
 
+            stim_residuals.(dh_label).(p_label).elec_residuals = elec_residuals;
+            stim_residuals.(dh_label).(p_label).mea_residual = mea_residual;
+            stim_residuals.(dh_label).(p_label).dead_init = dead_init;
+            stim_residuals.(dh_label).(p_label).dead_end = dead_end;
             
 %             for i_patterns = 1:numel(elec_residuals)
 %                 % Plot Artifact Residual
@@ -79,23 +79,29 @@ for dh_label = dh_labels_to_process
     end
 end
 
+save([tmpPath '/' 'dh_residuals.mat'], 'stim_residuals', 'stim_duration', 'time_spacing');
+movefile([tmpPath '/' 'dh_residuals.mat'], residuals_folder);
+
 
 % Put all dead times together
 dead_times_artifacts = [];
 
-for dh_label = dh_labels_to_process
-    s = load(getDatasetMat, dh_label);
-    
-    for p_label = pattern_labels
-        residual_file = [dh_label '_' p_label '_residuals.mat'];
-        load([tmpPath '/' residual_file], 'dead_init', 'dead_end');
+dh_sessions = fields(stim_residuals);
+for i_dh = 1:numel(dh_sessions)
+    dh_session = dh_sessions{i_dh};
+    dh_struct = load(getDatasetMat, dh_session);
 
-        for i_patt = 1:numel(stim_residuals.(dead_init)
-            di = dead_init{i_patt};
-            de = dead_end{i_patt};
-            stim_triggers = s.(dh_label).repetitions.(p_label);
-            dead_times_artifacts = [dead_times_artifacts; computeDeadTimes(stim_triggers, di, de)];
-        end
+    
+    dh_types = fields(stim_residuals.(dh_session));
+    for i_type = 1:numel(dh_types)
+        dh_type = dh_types{i_type};
+            for i_patt = 1:numel(stim_residuals.(dh_session).(dh_type).dead_init)
+                di = stim_residuals.(dh_session).(dh_type).dead_init{i_patt};
+                de = stim_residuals.(dh_session).(dh_type).dead_end{i_patt};
+                triggs = dh_struct.(dh_session).repetitions.(dh_type){i_patt};
+
+                dead_times_artifacts = [dead_times_artifacts; computeDeadTimes(triggs, di, de)];
+            end
     end
 end
 
