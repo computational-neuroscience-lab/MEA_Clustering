@@ -9,7 +9,7 @@ try
         return
     end
     
-    if activeDataset.name == datasets(index).name
+    if strcmp(activeDataset.name, datasets(index).name)
        fprintf("WARNING, Datasets is active. Impossible to delete dataset (do changeDataset first)\n");
        return
     end 

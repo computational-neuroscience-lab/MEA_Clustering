@@ -12,10 +12,10 @@ if ~exist('stim_electrodes', 'var')
     stim_electrodes = [127 128 255 256];
 end
 
+volt_factor = 0.001;
 [mea_size, chunk_size] = size(waves);
 
 x_wave = linspace(-0.45, +0.45, chunk_size);
-volt_factor = 0.001;
 
 for i_electrode = 1:mea_size
     x_mea = mea_map(i_electrode, 1);

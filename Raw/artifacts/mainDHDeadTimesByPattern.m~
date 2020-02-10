@@ -2,7 +2,7 @@
 % Params
 exp_id = '2010821_dh';
 
-dh_sessions_to_process = [1];
+dh_labels_to_process = {"DHMulti"};
 dh_sessions_to_mask = [];
 
 dead_electrodes = [];
@@ -14,8 +14,8 @@ time_spacing = 0.2*mea_rate;
 encoding = 'uint16';
 
 % Inputs
-raw_file = [dataPath(), '/', exp_id, '/sorted/CONVERTED.raw'];
 dh_times_file = [dataPath() '/' exp_id '/processed/DH/DHTimes.mat'];
+raw_file = [dataPath(), '/', exp_id, '/sorted/CONVERTED.raw'];
 mea_file = [dataPath() '/' exp_id '/PositionsMEA'];
 
 % Outputs
@@ -27,6 +27,37 @@ dead_times_file = [dataPath(), '/', exp_id, '/sorted/dead_times.txt'];
 load(dh_times_file, 'dhTimes')
 load(mea_file, 'Positions')
 mea_map = double(Positions);
+
+% Compute Artifact Residuals
+try
+    % Try to load the residuals if they exist
+    load([residuals_folder '/' residuals_file], 'stim_residuals', 'stim_duration', 'time_spacing');
+    
+    % Make sure the old parameters are the same
+    stim_duration_tmp = stim_duration;
+    time_spacing_tmp = time_spacing;
+    if (stim_duration_tmp ~= stim_duration) || (time_spacing_tmp ~= time_spacing) 
+        error(' you are mixing residual artifacts computed with different parameters')
+    end
+catch
+    stim_residuals = struct();
+end
+
+for dh_label = dh_labels_to_process
+    % for each dh_session compute the residuals if they do not exist yet
+    if ~isfield(stim_residuals, dh_label)
+        s = load(getDatasetmat, dh_labels_to_process);
+        pattern_labels = fieldnames(s.(dh_label).repetitions);
+        for p_label = pattern_labels
+            stim_triggers = s.(dh_label).repetitions.(p_labels);
+            residuals = computeStimResidual(raw_file, stim_triggers, stim_duration, time_spacing, mea_map, encoding);
+            stim_residuals.(dh_label).(p_labels) = residuals;
+        end
+    end
+end
+
+save([tmpPath '/' 'dh_residuals.mat'], 'stim_residuals', 'stim_duration', 'time_spacing');
+movefile([tmpPath '/' 'dh_residuals.mat'], residuals_folder);
     
 % Compute Dead Times on dh session to mask completely:
 dead_times_covered = zeros(numel(dh_sessions_to_mask), 2);
@@ -36,20 +67,7 @@ for i_dh = dh_sessions_to_mask
     dead_times_covered(i_dh, :) =  [dead_init dead_end];
 end
 
-% Get All Triggers to process
-triggers = [];
-for i_dh = dh_sessions_to_process
-    triggers = [triggers dhTimes{i_dh}.evtTimes_begin(:)'];
-end
 
-% Compute Artifact Residuals
-try
-    load([residuals_folder '/' residuals_file], 'residuals', 'triggers', 'stim_duration', 'time_spacing');
-catch
-    residuals = computeElectrodeResiduals(raw_file, triggers, stim_duration, time_spacing, mea_map, encoding);
-    save([tmpPath '/' 'dh_residuals.mat'], 'residuals', 'triggers', 'stim_duration', 'time_spacing');
-    movefile([tmpPath '/' 'dh_residuals.mat'], residuals_folder);
-end
 residual = computeMEAResidual([dead_electrodes, stim_electrodes], residuals);
 
 % Plot Artifact Residual

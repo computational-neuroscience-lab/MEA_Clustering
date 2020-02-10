@@ -24,5 +24,5 @@ end
 
 mea_size = size(mea_map, 1);
 waves = extractDataMEA(raw_file, time_step, chunk_size, mea_size, encoding);
-waves = reshape(waves, mea_size, chunk_size);
+waves = reshape(waves, mea_size, chunk_size)/10;
 plotDataMEA(waves, mea_map, color, dead_electrodes, stim_electrodes)

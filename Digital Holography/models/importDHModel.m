@@ -1,7 +1,7 @@
 % function importDHModel(model_label, session_label)
 
-model_label = 'LNP';
-session_label = 'DHMulti';
+model_label = 'LNP07';
+session_label = 'DHGridBlock';
 
 load(getDatasetMat(), 'experiments')
 if numel(experiments) > 1

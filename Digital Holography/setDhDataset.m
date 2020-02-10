@@ -1,10 +1,11 @@
 clear
 
 % dataset parameters
-session_label = 'DHGridBlock';      % label of the dataset that will be generated
-reps_labels = 'DHGridBlock';    % label of the session from which to get the repetitions
+session_label = 'DHMulti';      % label of the dataset that will be generated
+reps_labels = 'DHMulti';    % label of the session from which to get the repetitions
 spot_attenuation_func = @getDHFrameIntensities;
 datasets = {'zero', 'single', 'multi', 'test', 'all'};
+expId = '20200131_dh';
 
 % PSTH parameters
 trigger_suffix = '_begin_time';  % '_begin_time' or '_end_time'
@@ -13,7 +14,7 @@ dh_dataset.params.period = 0.5; % s
 dh_dataset.params.bin_init = 1;
 dh_dataset.params.bin_end = 1;
 
-% Load Data
+Load Data
 load(getDatasetMat(), 'experiments')
 load(getDatasetMat(), 'spikes');
 load(getDatasetMat(), 'params');
@@ -34,7 +35,7 @@ load(coordsFile, 'PatternCoords_Laser');
 load(coordsFile, 'PatternCoords_Img');
 
 % save spots
-dh_dataset.spots.coords_mea =  PatternCoords_MEA;
+% dh_dataset.spots.coords_mea =  PatternCoords_MEA;
 dh_dataset.spots.coords_laser =  PatternCoords_Laser;
 dh_dataset.spots.coords_img =  PatternCoords_Img;
 dh_dataset.sessions = dh_sessions;
@@ -59,16 +60,16 @@ for i_data = 1:numel(datasets)
     
     % Compute input intensities
     dh_dataset.stimuli.(dataset_label) = spot_attenuation_func(session_label, rep_frames);
+    dh_dataset.repetitions.(dataset_label) = repetitions';
 
     % Compute all the responses for each pattern
     dh_dataset.responses.(dataset_label).firingRates = zeros(n_cells, n_patterns);
     dh_dataset.responses.(dataset_label).spikeCounts = cell(n_cells, n_patterns);
-    dh_dataset.repetitions.(dataset_label) = repetitions';
     
     for i_p = 1:n_patterns
         % Responses to DH stim
         r_times = repetitions{i_p};
-        
+
         if ~isempty(r_times)
             [psth, ~, ~, responses] = doPSTH(spikes, r_times, bin_size, n_bins, params.meaRate, 1:n_cells);
             dh_dataset.responses.(dataset_label).firingRates(:, i_p) = psth;

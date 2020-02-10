@@ -2,9 +2,9 @@
 % Pool the repetitions and combine them in an unique set of triggers.
 
 % PARAMS
-exp_id = '20191011_grid';
-dh_sessions = 3;
-dh_reps_label = 'DHGridWild';
+exp_id = '20200131_dh';
+dh_sessions = 1:10;
+dh_reps_label = 'DHMulti';
 combine_as = 'STACK';  % CONCAT or STACK
 
 if strcmp(combine_as, 'CONCAT')
