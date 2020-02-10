@@ -14,7 +14,7 @@ dh_dataset.params.period = 0.5; % s
 dh_dataset.params.bin_init = 1;
 dh_dataset.params.bin_end = 1;
 
-Load Data
+% Load Data
 load(getDatasetMat(), 'experiments')
 load(getDatasetMat(), 'spikes');
 load(getDatasetMat(), 'params');
