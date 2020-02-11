@@ -1,8 +1,8 @@
 % Params
-dh_session2 = 'DHGridWild';
 dh_session1 = 'DHGridBlock';
+dh_session2 = 'DHGridBlock';
 
-model_label = 'LNP';
+model_label = 'LNP07';
 
 mea_rate = 20000;
 grid_scale = 0.04;
@@ -44,8 +44,8 @@ for i_cell = 1:numel(spikes)
     subplot(2, 3, 3)
     plotDHWeights(i_cell, dh_session1, model_label)
 
-    subplot(2, 3, 6)
-    plotDHWeights(i_cell, dh_session2, model_label)
+%     subplot(2, 3, 6)
+%     plotDHWeights(i_cell, dh_session2, model_label)
     
     fullScreen()
     

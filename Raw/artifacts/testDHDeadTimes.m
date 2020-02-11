@@ -1,6 +1,6 @@
 clear
 
-expId =  '20191011_grid';
+expId =  '20200131_dh';
 mea_rate = 20000;
 dh_spacing = 0.25; % s
 dh_duration = 0.50;
@@ -31,7 +31,7 @@ ylabel("Triggers")
 
 rect_color = [.6 .9 .9];
 rect_edges = [0, 0, dh_duration, length(triggers)];
-dh_plot = rectangle('Position', rect_edges,'FaceColor', rect_color, 'LineStyle', 'none');
+% dh_plot = rectangle('Position', rect_edges,'FaceColor', rect_color, 'LineStyle', 'none');
 hold on
 
 % add a stripe o spike trains for each pattern

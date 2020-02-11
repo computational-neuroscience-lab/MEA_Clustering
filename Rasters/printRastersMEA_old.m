@@ -3,10 +3,10 @@ close all
 clear
 
 % Parameters
-expId = '20190821_dh';
-
-idx_frame = [5 10 15 20 25 30 35 40 45 50 55 60]; % which pattern number do you want to display the responses to? You can try all, the pattern shape will be displayed by the code.
-n_reps = 10; % How many trials max do you want to display ?
+expId = '20200131_dh';
+dh_session = 'DHMulti';
+idx_frame = 1:5:36; % which pattern number do you want to display the responses to? You can try all, the pattern shape will be displayed by the code.
+n_reps = 15; % How many trials max do you want to display ?
 
 mea_rate = 20000;
 time_before = 0.25 * mea_rate; % How much time before the stim plotted ? In samples (seconds*sampling rate)
@@ -23,7 +23,7 @@ height = ss(4);
 vert = 1600;
 horz = 1600;
 
-dhRepetitionsFile = [dataPath() '/' expId '/processed/DH/DHRepetitions.mat'];
+dhRepetitionsFile = [dataPath() '/' expId '/processed/DH/DHRepetitions' dh_session '.mat'];
 raw_file = [dataPath() '/' expId '/sorted/CONVERTED.raw'];
 mea_file = [dataPath() '/' expId '/PositionsMEA.mat'];
 
@@ -67,7 +67,7 @@ for id_frame = 1:numel(single_begin_time)
         continue
     end
 
-    rasterFile = [dataPath() '/' expId '/processed/DH/Rasters/1spot_#', num2str(id_frame)];
+    rasterFile = [dataPath() '/' expId '/processed/DH/Plots/Mua_1spot_#', num2str(id_frame)];
     stim_repeats = single_begin_time{id_frame};
     stim_repeats = stim_repeats(1:min(n_reps, length(stim_repeats)));
 

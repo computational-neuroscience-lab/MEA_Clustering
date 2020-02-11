@@ -1,7 +1,7 @@
 
 % Parameters
-exp_id = '20191011_grid';
-sorted = true;
+exp_id = '20200131_dh';
+sorted = false;
 results_suffix = '-final';
 mea_rate = 20000; % Hz
 

@@ -3,7 +3,7 @@
 
 % PARAMS
 exp_id = '20200131_dh';
-dh_sessions = 1:10;
+dh_sessions = 1;
 dh_reps_label = 'DHMulti';
 combine_as = 'STACK';  % CONCAT or STACK
 

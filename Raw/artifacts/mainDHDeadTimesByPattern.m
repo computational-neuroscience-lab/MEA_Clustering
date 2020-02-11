@@ -6,7 +6,7 @@ dh_labels_to_process = ["DHMulti"];
 pattern_labels = ["single", "test", "multi"];
 
 dh_sessions_to_mask = [2 3 4];
-mea_rate = 20000;   % HzM
+mea_rate = 20000;   % Hz
 time_spacing = 0.2*mea_rate;
 
 % Inputs
