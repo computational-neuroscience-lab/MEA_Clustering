@@ -5,7 +5,7 @@ session_label = 'DHMulti';      % label of the dataset that will be generated
 reps_labels = 'DHMulti';    % label of the session from which to get the repetitions
 spot_attenuation_func = @getDHFrameIntensities;
 datasets = {'zero', 'single', 'multi', 'test', 'all'};
-expId = '20200131_dh';
+% expId = '20200131_dh';
 
 % PSTH parameters
 trigger_suffix = '_begin_time';  % '_begin_time' or '_end_time'
@@ -35,7 +35,7 @@ load(coordsFile, 'PatternCoords_Laser');
 load(coordsFile, 'PatternCoords_Img');
 
 % save spots
-% dh_dataset.spots.coords_mea =  PatternCoords_MEA;
+dh_dataset.spots.coords_mea =  PatternCoords_MEA;
 dh_dataset.spots.coords_laser =  PatternCoords_Laser;
 dh_dataset.spots.coords_img =  PatternCoords_Img;
 dh_dataset.sessions = dh_sessions;
@@ -80,8 +80,10 @@ for i_data = 1:numel(datasets)
     end
 end
 
+% computeDHActivation(session_label)
+
+
+
 dh_dataset.sessions = dh_sessions;
 data.(session_label) = dh_dataset;
 save(getDatasetMat, '-struct', 'data', "-append")
-
-computeDHActivation(session_label)

@@ -30,13 +30,13 @@ load(coords_file, 'PatternCoords_MEA');
 
 evt_begin_label = [pattern_type '_begin_time'];
 frames_label = [pattern_type '_frames'];
-s = load(repetitions_file, evt_begin_label, freames_label);
+s = load(repetitions_file, evt_begin_label, frames_label);
 
 mea_map = double(Positions);
 x_spots = PatternCoords_MEA(:, 1)/elec_radius;
 y_spots = PatternCoords_MEA(:, 2)/elec_radius;
 
-for i_pattern = 1:numel(single_begin_time)
+for i_pattern = 1:numel( s.(evt_begin_label))
     
     spot = find(s.(frames_label)(i_pattern, :));
     

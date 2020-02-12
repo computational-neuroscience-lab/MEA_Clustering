@@ -1,6 +1,7 @@
 clear
 
 % Params
+changeDataset('20200131_dh')
 exp_id = '20200131_dh';
 dh_labels_to_process = "DHMulti";
 pattern_labels = ["single", "test", "multi"];
@@ -29,20 +30,20 @@ for dh_label = dh_labels_to_process
         load([residuals_folder '/' residual_file], 'dead_init', 'dead_end', 'mea_residual', 'elec_residuals', 'time_spacing', 'stim_duration', 'mea_rate')        
             
         for i_patterns = 1:numel(elec_residuals)
-            patterns = logical(s.(dh_label).stimuli.(p_label)(i_patterns, :));
+            pattern = logical(s.(dh_label).stimuli.(p_label)(i_patterns, :));
             tot_residuals = max(elec_residuals{i_patterns}, tot_residuals);
             
             % Plot Artifact Residual
-            plotMEA()
-            plotDataMEA(elec_residuals{i_patterns}, mea_map, 'blue', dead_electrodes)
-            title(residual_file, 'Interpreter', 'None')
-            scatter(points(pattern,1), points(pattern,2), 50, 'r', 'filled')
-            
-            % Get Dead Interval around artifact Residuals
-            plotDeadIntervals(dead_init{i_patterns}, dead_end{i_patterns}, mea_residual{i_patterns}, time_spacing, stim_duration, mea_rate);
-            title(residual_file, 'Interpreter', 'None')
-            waitforbuttonpress();
-            close all
+%             plotMEA()
+%             plotDataMEA(elec_residuals{i_patterns}, mea_map, 'blue', dead_electrodes)
+%             title(residual_file, 'Interpreter', 'None')
+%             scatter(points(pattern,1), points(pattern,2), 50, 'r', 'filled')
+%             
+%             % Get Dead Interval around artifact Residuals
+%             plotDeadIntervals(dead_init{i_patterns}, dead_end{i_patterns}, mea_residual{i_patterns}, time_spacing, stim_duration, mea_rate);
+%             title(residual_file, 'Interpreter', 'None')
+%             waitforbuttonpress();
+%             close all
         end
     end
 end

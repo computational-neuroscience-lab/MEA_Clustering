@@ -4,6 +4,7 @@ exp_id = '20200131_dh';
 sorted = false;
 results_suffix = '-final';
 mea_rate = 20000; % Hz
+mea_channels = [1:126 129:254];
 
 % Plots Params
 tBin = 0.05;% s
