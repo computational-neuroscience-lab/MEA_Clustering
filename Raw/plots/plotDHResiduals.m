@@ -9,7 +9,7 @@ stim_electrodes = [127 128 255 256];
  
 % Folders
 mea_file = [dataPath() '/' exp_id '/PositionsMEA'];
-residual_file = [dataPath(), '/', exp_id, '/processed/DH/dh_residuals.mat'];
+residual_file = [dataPath(), '/', exp_id, '/processed/DH/artifacts/dh_residuals.mat'];
 
 % Load
 load(mea_file, 'Positions')
@@ -18,6 +18,6 @@ mea_map = double(Positions);
 load(residual_file, 'dead_init', 'dead_end', 'elec_residuals', 'mea_residual', 'time_spacing', 'stim_duration')        
 
 plotMEA()
-plotDataMEA(residuals, mea_map, 'blue', dead_electrodes)
+plotDataMEA(elec_residuals, mea_map, 'blue', dead_electrodes)
 title(residual_file, 'Interpreter', 'None')
-plotDeadIntervals(dead_init, dead_end, residual, time_spacing, stim_duration, mea_rate);
+plotDeadIntervals(dead_init, dead_end, mea_residual, time_spacing, stim_duration, mea_rate);

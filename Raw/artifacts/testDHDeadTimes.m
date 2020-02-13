@@ -6,13 +6,13 @@ dh_spacing = 0.25; % s
 dh_duration = 0.50;
 
 dh_triggers_file = strcat(dataPath, "/", expId, "/processed/DH/DHTimes.mat");
-dead_times_file = strcat(dataPath, "/", expId, "/sorted/dead_times.txt");
+dead_times_file = strcat(dataPath, "/", expId, "/sorted/dead_times_patterns.txt");
 
 load(dh_triggers_file, 'dhTimes')
 load(dead_times_file)
 
-dead_inits = dead_times(:, 1);
-dead_ends = dead_times(:, 2);
+dead_inits = dead_times_patterns(:, 1);
+dead_ends = dead_times_patterns(:, 2);
 
 % Get all Stim Repetitions
 triggers = [];
@@ -20,18 +20,17 @@ for i_dh = 1:numel(dhTimes)
     triggers = [triggers dhTimes{i_dh}.evtTimes_begin(:)'];
 end
 
-
 % build figure with background rectangle representing holo stimulation
 figure()
-% xlim([-dh_spacing, dh_duration + dh_spacing])
-% ylim([0, length(triggers)])
+xlim([-dh_spacing, dh_duration + dh_spacing])
+ylim([0, length(triggers)])
 
 xlabel("Time (s)")
 ylabel("Triggers")
 
 rect_color = [.6 .9 .9];
 rect_edges = [0, 0, dh_duration, length(triggers)];
-% dh_plot = rectangle('Position', rect_edges,'FaceColor', rect_color, 'LineStyle', 'none');
+dh_plot = rectangle('Position', rect_edges,'FaceColor', rect_color, 'LineStyle', 'none');
 hold on
 
 % add a stripe o spike trains for each pattern

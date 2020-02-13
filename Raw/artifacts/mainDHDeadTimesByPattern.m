@@ -2,9 +2,10 @@ clear
 
 % Params
 exp_id = '20200131_dh';
+load_residuals = true;
 
 dh_sessions = "DHMulti";
-dh_types = ["single", "test", "multi"];
+dh_types = ["single", "test", "multi", "zero"];
 dh_sessions_to_mask = [2 3 4];
 
 dead_electrodes = [];
@@ -21,11 +22,12 @@ mea_file = [dataPath() '/' exp_id '/PositionsMEA'];
 dh_times_file = [dataPath() '/' exp_id '/processed/DH/DHTimes.mat'];
 
 % Outputs
-residual_file_suffix = '_residuals.mat';
-residuals_folder = [dataPath(), '/', exp_id, '/processed/DH/'];
-dead_times_file = [dataPath(), '/', exp_id, '/sorted/dead_times.txt'];
+residuals_file_suffix = '_residuals.mat';
+residuals_folder = [dataPath(), '/', exp_id, '/processed/DH/artifacts'];
+dead_times_file = [dataPath(), '/', exp_id, '/sorted/dead_times_patterns.txt'];
 
 % Load
+changeDataset(exp_id);
 load(dh_times_file, 'dhTimes')
 load(mea_file, 'Positions')
 mea_map = double(Positions);
@@ -41,25 +43,24 @@ for session_id = dh_sessions
         for i_pattern = 1:numel(dh_patterns)
             dh_triggers = dh_patterns{i_pattern};
             
-            % Compute the residuals if it had not been done before
-            residual_file = [char(session_id) '_' char(type_id) '_' num2str(i_pattern) residual_file_suffix];
-            if ~exist([residuals_folder '/' residual_file], 'file')
-                
+           % Load the dead times and use them
+            residuals_file = [char(session_id) '_' char(type_id) '_' num2str(i_pattern) residuals_file_suffix];
+            if exist([residuals_folder '/' residuals_file], 'file') && load_residuals
+                load([residuals_folder '/' residuals_file], 'dead_init', 'dead_end');
+
+             % Or compute the them if it had not been done before           
+            else     
                 % compute residuals and dead_time intervals
-                elec_residuals = computeElectrodeResidual(raw_file, dh_patterns, stim_duration, time_spacing, mea_map, encoding);
+                elec_residuals = computeElectrodeResiduals(raw_file, dh_triggers, stim_duration, time_spacing, mea_map, encoding);
                 mea_residual = computeMEAResidual([stim_electrodes, dead_electrodes], elec_residuals);
                 [dead_init, dead_end] = computeDeadIntervals(mea_residual, time_spacing);
                 
                 % save
-                save([tmpPath '/' residual_file], 'dead_init', 'dead_end', 'time_spacing', 'stim_duration', 'mea_rate');
-                save([tmpPath '/' residual_file], 'elec_residuals', 'mea_residual', '-append');
-                movefile([tmpPath '/' residual_file], residuals_folder);
-                
-            % Otherwise, just load the dead times and use them
-            else
-                load([residuals_folder '/' residual_file], 'dead_init', 'dead_end');
-                dead_times_artifacts = [dead_times_artifacts; computeDeadTimes(dh_triggers, dead_init, dead_end)];
-            end
+                save([tmpPath '/' residuals_file], 'dead_init', 'dead_end', 'time_spacing', 'stim_duration', 'mea_rate');
+                save([tmpPath '/' residuals_file], 'elec_residuals', 'mea_residual', '-append');
+                movefile([tmpPath '/' residuals_file], residuals_folder);
+            end                
+            dead_times_artifacts = [dead_times_artifacts; computeDeadTimes(dh_triggers, dead_init, dead_end)];
         end
     end
 end

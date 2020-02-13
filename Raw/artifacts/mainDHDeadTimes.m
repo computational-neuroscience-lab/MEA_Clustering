@@ -2,6 +2,7 @@ clear
 
 % Params
 exp_id = '20200131_dh';
+load_residuals = true;
 
 
 dh_sessions_to_process = 1;
@@ -22,10 +23,11 @@ dh_times_file = [dataPath() '/' exp_id '/processed/DH/DHTimes.mat'];
 
 % Outputs
 residuals_file = 'dh_residuals.mat';
-residuals_folder = [dataPath(), '/', exp_id, '/processed/DH'];
+residuals_folder = [dataPath(), '/', exp_id, '/processed/DH/artifacts'];
 dead_times_file = [dataPath(), '/', exp_id, '/sorted/dead_times.txt'];
 
 % Load
+changeDataset(exp_id);
 load(dh_times_file, 'dhTimes')
 load(mea_file, 'Positions')
 mea_map = double(Positions);
@@ -37,8 +39,8 @@ for i_dh = dh_sessions_to_process
 end
 
 % Load the dead times
-if exist([residuals_folder '/' residual_file], 'file')
-    load([residuals_folder '/' residuals_file], 'triggers', 'stim_duration', 'time_spacing');
+if exist([residuals_folder '/' residuals_file], 'file') && load_residuals
+    load([residuals_folder '/' residuals_file], 'dead_init', 'dead_end');
     
 % Or compute them if it had not been done before
 else
@@ -47,9 +49,9 @@ else
     [dead_init, dead_end] = computeDeadIntervals(mea_residual, time_spacing);
     
     % save
-    save([tmpPath '/' residual_file], 'dead_init', 'dead_end', 'time_spacing', 'stim_duration', 'mea_rate');
-    save([tmpPath '/' residual_file], 'elec_residuals', 'mea_residual', '-append');
-    movefile([tmpPath '/' residual_file], residuals_folder);
+    save([tmpPath '/' residuals_file], 'dead_init', 'dead_end', 'time_spacing', 'stim_duration', 'mea_rate');
+    save([tmpPath '/' residuals_file], 'elec_residuals', 'mea_residual', '-append');
+    movefile([tmpPath '/' residuals_file], residuals_folder);
 end
 
 % Compute Dead Times for artifact Residuals
