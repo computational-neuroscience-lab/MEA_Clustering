@@ -88,24 +88,25 @@ if any(checker_index)
     
     % Test Checkerboard
     figure
-    plotRaster(120:130, SpikeTimes, rep_begin, rep_end, mea_rate);
+    plotRaster(1:10, SpikeTimes, rep_begin, rep_end, mea_rate);
     suptitle("CheckerBoard Raster")
-    
-    % Spike Sorting Repetitions
-    rep_begin_time{1} = rep_begin;
-    rep_end_time{1} = rep_end;
-    save([tmpPath() '/' 'CONVERTED.stim'], 'rep_begin_time', 'rep_end_time')
-    movefile([tmpPath() '/' 'CONVERTED.stim'], vars_path)
 end
 
 % Euler Repetitions
 if any(euler_index)
+    
     load([euler_path '/Euler_Stim.mat'], 'euler')
     euler_evtTime = evtTimes{euler_index}.evtTimes_begin;
     euler_n_steps = length(euler);
     [rep_begin, rep_end] = getConsecutiveStimRepetitions(euler_evtTime, euler_n_steps);
     save([tmpPath() '/' 'Euler_RepetitionTimes.mat'], 'rep_begin', 'rep_end')
     movefile([tmpPath() '/' 'Euler_RepetitionTimes.mat'], euler_path)
+    
+    % Spike Sorting Repetitions
+    rep_begin_time{1} = rep_begin;
+    rep_end_time{1} = rep_end;
+    save([tmpPath() '/' 'CONVERTED.stim'], 'rep_begin_time', 'rep_end_time')
+    movefile([tmpPath() '/' 'CONVERTED.stim'], raw_path)
     
     % Test Euler
     figure
@@ -118,12 +119,6 @@ if any(euler_index)
     figure
     plotRaster(1:10, SpikeTimes, rep_begin, rep_end, mea_rate);
     suptitle("Euler Raster")
-    
-    % Spike Sorting Repetitions
-    rep_begin_time{1} = rep_begin;
-    rep_end_time{1} = rep_end;
-    save([tmpPath() '/' 'CONVERTED.stim'], 'rep_begin_time', 'rep_end_time')
-    movefile([tmpPath() '/' 'CONVERTED.stim'], vars_path)
 end
 
 % STA
