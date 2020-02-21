@@ -4,9 +4,9 @@ clear
 exp_id = '20200131_dh';
 load_residuals = true;
 
-dh_sessions = "DHMulti";
+dh_sessions = ["DHMulti", "DHSingle2"];
 dh_types = ["single", "test", "multi", "zero"];
-dh_sessions_to_mask = [2 3 4];
+dh_sessions_to_mask = [2 3];
 
 dead_electrodes = [];
 stim_electrodes = [127 128 255 256];

@@ -3,8 +3,8 @@
 
 % PARAMS
 exp_id = '20200131_dh';
-dh_sessions = 1;
-dh_reps_label = 'DHMulti';
+dh_sessions = 4;
+dh_reps_label = 'DHSingle';
 combine_as = 'STACK';  % CONCAT or STACK
 
 if strcmp(combine_as, 'CONCAT')

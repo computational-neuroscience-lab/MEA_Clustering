@@ -3,33 +3,46 @@ clear
 
 model = 'LNP';
 session_label = 'DHMulti';
-exp_id = '20170614'; 
 
-% idx_cells = find(getDHLNPAccuracies() > .5)';
-% idx_cells = find(dh_models.(model).isModeled)';
-idx_cells = 1:numel(cellsTable);
+load(getDatasetMat, 'cellsTable');
+s = load(getDatasetMat, session_label);
+exp_id = getExpId();
+
+% idx_cells = find(s.(session_label).activation > 0.6)';
+idx_cells = 132:numel(cellsTable);
 path = [dataPath '/' exp_id '/processed/DH'];
+
+if ~exist([path '/Plots'], 'dir')
+    mkdir([path '/Plots'])
+end
 
 for i_cell = idx_cells
     
-    plotDHCellCard(cell_id, session_label, model);
-    saveas(gcf, [path '/Weights/' DHMulti num2str(i_cell) '_ws'],'jpg');
+    plotCellCard(i_cell);
+    saveas(gcf, [tmpPath '/' session_label '_cell' num2str(i_cell)], 'jpg');
+    movefile([tmpPath '/' session_label '_cell' num2str(i_cell) '.jpg'], [path '/Plots'])
     close;
     
-    plotDHWeights(i_cell, session_label, model);
-    saveas(gcf, [path '/Weights/' DHMulti num2str(i_cell) '_ws'],'jpg');
-    close;
+%     plotDHWeights(i_cell, session_label, model);
+%     saveas(gcf, [path '/Plots/' session_label num2str(i_cell) '_Weights'],'jpg');
+%     close;
 
-    plotDHPredictions(i_cell, session_label, model);
-    saveas(gcf, [path '/Predictions/' DHMulti num2str(i_cell) '_pred'],'jpg');
+%     plotDHPredictions(i_cell, session_label, model);
+%     saveas(gcf, [path '/Plots/' session_label num2str(i_cell) '_Predictions'],'jpg');
+%     close;
+    
+    plotDHRasterSingleAndTest(i_cell, session_label);
+    saveas(gcf, [tmpPath '/' session_label '_raster'  num2str(i_cell)], 'jpg');
+    movefile([tmpPath '/' session_label '_raster'  num2str(i_cell) '.jpg'], [path '/Plots'])
     close;
     
-    plotDHRaster(i_cell, session_label, 'single');
-    saveas(gcf, [path '/Rasters/' DHMulti num2str(i_cell) '_pred'],'jpg');
-    close;
-    
-    plotDHAccuracyCorr(i_cell, session_label, model);
-    saveas(gcf, [path '/Accuracies/' DHMulti num2str(i_cell) '_acc'],'jpg');
-    close;
+%     plotDHRaster(i_cell, session_label, 'test');
+%     saveas(gcf, [tmpPath '/' session_label num2str(i_cell) '_RastersTest'],'jpg');
+%     movefile([tmpPath '/' session_label num2str(i_cell) '_RastersTest.jpg'], [path '/Plots'])
+%     close;
+%     
+%     plotDHAccuracyCorr(i_cell, session_label, model);
+%     saveas(gcf, [path '/Plots/' session_label num2str(i_cell) '_acc'],'jpg');
+%     close;
  
 end

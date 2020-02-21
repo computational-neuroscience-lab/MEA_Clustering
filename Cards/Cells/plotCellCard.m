@@ -1,6 +1,5 @@
 function plotCellCard(cell_id)
 
-fullScreen();
 
 load(getDatasetMat, 'cellsTable', 'clustersTable');
 
@@ -36,3 +35,5 @@ supertitle = {  ['Cell #' num2str(cell_id) '. ' 'Type: ' char(cell_type)];
             
 h = suptitle(supertitle);
 h.Interpreter = 'none';
+
+fullScreen();

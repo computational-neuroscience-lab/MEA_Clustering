@@ -46,8 +46,8 @@ global PCAs;
 if ~exist('clusters_params','var') || isempty(clusters_params)
     
     % DEFAULT PARAMETERS
-    clusters_params.min_size = 3;
-    clusters_params.split_size = 5;
+    clusters_params.min_size = 4;
+    clusters_params.split_size = 6;
     
     clusters_params.min_psth_SNR = .6;
     clusters_params.min_sta_SNR = .9;
@@ -64,7 +64,7 @@ refNPcaComponents = 10;
 nIterations = 3;
 features = {tracesMat, tracesMat, tracesMat};
 nPcaComponents = [10, 10, 10];
-nMaxBranchings = [16, 12, 8];
+nMaxBranchings = [32, 4, 4];
 
 % admissibility check
 cluster_min_size = clusters_params.min_size;

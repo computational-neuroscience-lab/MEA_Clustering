@@ -21,7 +21,7 @@ IS.StimFilePath = [stimPath '/Checkerboard/binarysource1000Mbits'];
 % can be a .data containing SpikeTimes, cell of spike times for each cell, OR 1 .mat data for each cell containing SpikeTime, list of the spike times
     
 %%% Channels to analyse %%%
-Channels = [1, 10, 15, 16];
+Channels = 1:n_cells;
 
 IS.Nlatency=21;  % by default 21 different time bins (-20 : 0)   
 IS.NCheckerboard1= 51; %number of squarres per side in the checkerboard. 20 by default.

@@ -1,4 +1,4 @@
-function plotDHRaster(i_cell, session, dataset)
+function plotDHRaster(i_cell, session, pattern_type)
 
 n_patterns_by_column = 50;
 
@@ -11,7 +11,7 @@ s = load(getDatasetMat(), session);
 dh_spot_duration = s.(session).params.period;
 
 % Get all Stim Repetitions
-pattern_reps = s.(session).repetitions.(dataset);
+pattern_reps = s.(session).repetitions.(pattern_type);
 n_patterns = numel(pattern_reps);
 n_columns = ceil(n_patterns/n_patterns_by_column);
 
@@ -25,7 +25,7 @@ for i_column = 1:n_columns
     p2 = min(n_patterns, i_column*n_patterns_by_column);
     idx = p1:p2;
 
-    labels = yPatternLabels(s.(session).stimuli.(dataset)(idx, :));
+    labels = yPatternLabels(s.(session).stimuli.(pattern_type)(idx, :));
     plotStimRaster(spikes{i_cell}, pattern_reps(idx), dh_spot_duration, dh_spot_duration, params.meaRate, labels)
-    title([session ', Cell #' num2str(i_cell) ': ' char(dataset ) ' set, patterns ' num2str(p1) ':' num2str(p2)], 'Interpreter', 'None')
+    title([session ', Cell #' num2str(i_cell) ': ' char(pattern_type ) ' set, patterns ' num2str(p1) ':' num2str(p2)], 'Interpreter', 'None')
 end

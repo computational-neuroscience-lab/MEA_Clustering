@@ -5,7 +5,7 @@ if ~exist('dt_threshold', 'var')
 end
 
 if ~exist('evt_threshold', 'var')
-    evt_threshold = 100;
+    evt_threshold = 500;
 end
 
 if ~exist('frame_rate', 'var')

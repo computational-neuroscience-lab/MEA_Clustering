@@ -1,10 +1,10 @@
 clear
 
 % dataset parameters
-session_label = 'DHMulti';      % label of the dataset that will be generated
-reps_labels = 'DHMulti';    % label of the session from which to get the repetitions
+session_label = 'DHSingle';      % label of the dataset that will be generated
+reps_labels = 'DHSingle';    % label of the session from which to get the repetitions
 spot_attenuation_func = @getDHFrameIntensities;
-datasets = {'zero', 'single', 'multi', 'test', 'all'};
+datasets = {'zero', 'single', 'multi', 'test'};
 % expId = '20200131_dh';
 
 % PSTH parameters
@@ -80,10 +80,10 @@ for i_data = 1:numel(datasets)
     end
 end
 
-% computeDHActivation(session_label)
-
-
-
 dh_dataset.sessions = dh_sessions;
 data.(session_label) = dh_dataset;
 save(getDatasetMat, '-struct', 'data', "-append")
+
+computeDHActivation(session_label, 'single')
+computeDHActivation(session_label, 'test')
+

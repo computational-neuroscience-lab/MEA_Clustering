@@ -1,8 +1,11 @@
-function plotDHMEA(exp_id, session_label)
+function plotDHMEA(dh_sessions)
+% dh_sessions = cell of dh_sessions id (in char)
+
 l_elec = 30;  % units
 
-session_struct = load(getDatasetMat, session_label);
-i_session = session_struct.(session_label).sessions(1);
+exp_id = getExpId();
+session_struct = load(getDatasetMat, dh_sessions{1});
+i_session = session_struct.(dh_sessions{1}).sessions(1);
 
 % COMPUTE HOMOGRAPHY             
 H_img2mea = getHomography(['img' num2str(i_session)], 'mea', exp_id);
@@ -26,6 +29,11 @@ title("MEA Coordinates")
 
 
 % ADD DH POINTS
-points = getDHSpotsCoordsMEA(exp_id, session_label);
-scatter(points(:,1), points(:,2), 50, 'r', 'filled')
-text(points(:,1) + 2, points(:,2), string(1:size(points, 1)))
+colors = getColors(numel(dh_sessions));
+for i_dh = 1:numel(dh_sessions)
+    points = getDHSpotsCoordsMEA(dh_sessions{i_dh});
+    color = colors(i_dh, :);
+    scatter(points(:,1), points(:,2), 50, color, 'filled')
+    text(points(:,1) + 2, points(:,2), string(1:size(points, 1)))
+end
+legend(dh_sessions)

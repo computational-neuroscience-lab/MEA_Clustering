@@ -6,13 +6,13 @@ dh_spacing = 0.25; % s
 dh_duration = 0.50;
 
 dh_triggers_file = strcat(dataPath, "/", expId, "/processed/DH/DHTimes.mat");
-dead_times_file = strcat(dataPath, "/", expId, "/sorted/dead_times_patterns.txt");
+dead_times_file = strcat(dataPath, "/", expId, "/sorted/dead_times_patterns_multiAndSingle.txt");
 
 load(dh_triggers_file, 'dhTimes')
 load(dead_times_file)
 
-dead_inits = dead_times_patterns(:, 1);
-dead_ends = dead_times_patterns(:, 2);
+dead_inits = dead_times_patterns_multiAndSingle(:, 1);
+dead_ends = dead_times_patterns_multiAndSingle(:, 2);
 
 % Get all Stim Repetitions
 triggers = [];
