@@ -99,7 +99,7 @@ for i_plot = 1:numel(columns_idx)
     idx = pattern_idx(p1:p2);
 
     labels = yPatternLabels(s.(session_label).stimuli.(pattern_type)(idx, :));
-    title_txt = [session_label ', Cell #' num2str(i_cell) ': ' char(pattern_type ) ' set, patterns ' num2str(p1) ':' num2str(p2)];
+    title_txt = ['patterns ' num2str(p1) ':' num2str(p2)];
     
     if do_dead_times
         dt_session = s.(session_label).params.reps_label;
@@ -132,3 +132,4 @@ for i_plot = 1:numel(columns_idx)
             'Column_Size', n_patterns_by_column);
     end
 end
+suptitle([session_label ', Cell #' num2str(i_cell) ': ' char(pattern_type ) ' set'])
