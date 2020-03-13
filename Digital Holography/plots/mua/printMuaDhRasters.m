@@ -1,7 +1,7 @@
 % Params
-exp_id = '20200131_dh';
-dh_session = 'DHMulti';
-pattern_type = 'test';
+exp_id = '20200109_a2';
+dh_session = 'DMD';
+pattern_type = 'single';
 
 mea_rate = 20000;
 mea_channels = [1:126, 129:254]; % excluded trigger electrodes

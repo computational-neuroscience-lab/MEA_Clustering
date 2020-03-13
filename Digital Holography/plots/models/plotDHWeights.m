@@ -57,6 +57,6 @@ title_2 = strcat("r = exp(aW .* I + b)   <a = ",  string(a), ",   b = ",  string
 title({title_1, title_2}, 'interpreter', 'none');
 
 
-xlim([-250, 750])
-ylim([-250, 750])
+xlim([-150, 450])
+ylim([-150, 450])
 set(gcf,'Position',[0, 0, 1000, 1200]);

@@ -27,7 +27,6 @@ residuals_folder = [dataPath(), '/', exp_id, '/processed/DH/artifacts'];
 dead_times_file = [dataPath(), '/', exp_id, '/sorted/dead_times.txt'];
 
 % Load
-changeDataset(exp_id);
 load(dh_times_file, 'dhTimes')
 load(mea_file, 'Positions')
 mea_map = double(Positions);

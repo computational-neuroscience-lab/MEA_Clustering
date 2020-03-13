@@ -1,7 +1,7 @@
 
 % Parameters
-exp_id = '20200131_dh';
-sorted = true;
+exp_id = '20200109_a2';
+sorted = false;
 results_suffix = '-total';
 mea_rate = 20000; % Hz
 mea_channels = [1:126 129:254];

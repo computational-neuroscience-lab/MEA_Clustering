@@ -1,16 +1,16 @@
 % Params
-exp_id = '20200131_dh';
-dh_session = 'DHMulti';
-pattern_type = 'test';
+exp_id = '20200109_a2';
+dh_session = 'DH_DMD_BLOCK';
+pattern_type = 'single';
 
 mea_rate = 20000;
 spacing = 0.25 * mea_rate;
 chunk_size = 0.5 * mea_rate + spacing*2;
-dead_electrodes = 30;
+dead_electrodes = [];
 elec_radius = 30;
 
 raw_filt = [dataPath '/' exp_id '/sorted/CONVERTED.raw'];
-% raw_unfilt = [dataPath '/' exp_id '/sorted/CONVERTED_UNFILTERED.raw'];
+% raw_unfilt = [dataPath '/' exp_id '/sorted/CONVERTED_NO_FILT.raw'];
 
 repetitions_file = [dataPath '/' exp_id '/processed/DH/DHRepetitions' dh_session '.mat'];
 coords_file = [dataPath, '/' exp_id '/processed/DH/DHCoords' dh_session '.mat'];
@@ -45,8 +45,8 @@ for i_pattern = 1:n_patterns
     title(raster_name, 'Interpreter', 'None')
     
 %     export_fig([tmpPath '/' raster_name '.svg'])
-    saveas(gcf, [tmpPath '/' raster_name],'svg');
-    movefile([tmpPath '/' raster_name '.svg'], rasters_folder);
+%     saveas(gcf, [tmpPath '/' raster_name],'svg');
+%     movefile([tmpPath '/' raster_name '.svg'], rasters_folder);
     pause();
     close;
 end

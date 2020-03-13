@@ -14,4 +14,5 @@ title(strcat("Cell #", string(i_cell), ": multi spot mean activation"));
 legend("cell recordings", "model prediction");
 
 accuracy = s.(session).(model).accuracies(i_cell);
-title([char(session) ', Model #' num2str(i_cell) ': pears_coeff = ' num2str(accuracy)], 'Interpreter', 'None')
+rmse = s.(session).(model).rmses(i_cell);
+title([char(session) ', Model #' num2str(i_cell) ': pears_coeff = ' num2str(accuracy) ', rmse = ' num2str(rmse)], 'Interpreter', 'None')

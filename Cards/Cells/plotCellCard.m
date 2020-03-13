@@ -27,7 +27,7 @@ plotTSTAs(cell_id);
 title('STA');
 
 subplot(2, 3, [3, 6])
-plotSSTAs(cell_id);
+plotDHFiringRates(cell_id, 'DHSingle')
 title('Receptive Field');
 
 supertitle = {  ['Cell #' num2str(cell_id) '. ' 'Type: ' char(cell_type)];

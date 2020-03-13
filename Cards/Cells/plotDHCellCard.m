@@ -21,7 +21,7 @@ plotTSTAs(cell_id);
 title('STA');
 
 subplot(2, 3, [2, 3, 5, 6])
-plotDHWeights(cell_id, session_label, dh_model);
+plotDHWeights(cell_id, session_label, dh_model, true);
 
 supertitle = {  ['Cell #' num2str(cell_id) '. ' 'Type: ' char(cell_type)];
                 ['Experiment: ' char(cell_exp) ', N = ' num2str(cell_N) '.']};

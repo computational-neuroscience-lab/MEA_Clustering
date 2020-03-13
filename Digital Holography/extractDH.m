@@ -2,9 +2,9 @@
 % Pool the repetitions and combine them in an unique set of triggers.
 
 % PARAMS
-exp_id = '20200131_dh';
-dh_sessions = 4;
-dh_reps_label = 'DHSingle';
+exp_id = '20200109_a2';
+dh_sessions = 6;
+dh_reps_label = 'DH_DMD_BLOCK';
 combine_as = 'STACK';  % CONCAT or STACK
 
 if strcmp(combine_as, 'CONCAT')

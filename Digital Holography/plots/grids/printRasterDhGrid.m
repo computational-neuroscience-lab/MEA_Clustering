@@ -12,9 +12,7 @@ evt_binsize = 0.5 * mea_rate;
 evt_spacing = 0.5 * mea_rate;
 
 % Paths
-load(getDatasetMat(), 'experiments')
-assert (numel(experiments) == 1)
-exp_id = char(experiments{1});
+exp_id = getExpId();
 rasters_folder = [dataPath() '/' exp_id '/processed/DH/Plots/Rasters'];
 
 % Load

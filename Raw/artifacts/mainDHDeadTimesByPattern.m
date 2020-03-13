@@ -1,12 +1,12 @@
 clear
 
 % Params
-exp_id = '20200131_dh';
+exp_id = '20200109_a2';
 load_residuals = true;
 
-dh_sessions = ["DHMulti", "DHSingle2"];
+dh_sessions = ["DH", "DH_DMD", "DH_BLOCK", "DH_DMD_BLOCK"];
 dh_types = ["single", "test", "multi", "zero"];
-dh_sessions_to_mask = [2 3];
+dh_sessions_to_mask = [7];
 
 dead_electrodes = [];
 stim_electrodes = [127 128 255 256];
@@ -66,11 +66,15 @@ for session_id = dh_sessions
 end
 
 % Compute Dead Times on dh session to mask completely:
-dead_times_covered = zeros(numel(dh_sessions_to_mask), 2);
-for i_dh = dh_sessions_to_mask
-    dead_init = dhTimes{i_dh}.evtTimes_begin(1) - time_spacing;
-    dead_end = dhTimes{i_dh}.evtTimes_end(end) + time_spacing;
-    dead_times_covered(i_dh, :) =  [dead_init dead_end];
+dead_times_covered = zeros(0, 2);
+n_dt = 0;
+for i_dh = 1:numel(dh_sessions_to_mask)
+    for i_t = 1:numel(dhTimes{dh_sessions_to_mask(i_dh)}.evtTimes_begin)
+        dead_init = dhTimes{dh_sessions_to_mask(i_dh)}.evtTimes_begin(i_t) - time_spacing;
+        dead_end = dhTimes{dh_sessions_to_mask(i_dh)}.evtTimes_end(i_t) + time_spacing;
+        n_dt = n_dt +1;
+        dead_times_covered(n_dt, :) =  [dead_init dead_end];
+    end
 end
 
 % Put together and sort all dead times
