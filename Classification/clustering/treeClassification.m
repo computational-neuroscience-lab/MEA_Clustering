@@ -62,9 +62,9 @@ refNPcaComponents = 10;
 
 % recursive classification
 nIterations = 3;
-features = {tracesMat, tracesMat, tracesMat};
+features = {tracesMat, tracesMat, tracesMat, tracesMat};
 nPcaComponents = [10, 10, 10];
-nMaxBranchings = [32, 4, 4];
+nMaxBranchings = [24, 8, 8, 8];
 
 % admissibility check
 cluster_min_size = clusters_params.min_size;

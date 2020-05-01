@@ -1,10 +1,11 @@
 
 % Parameters
 exp_id = '20200109_a2';
-sorted = false;
-results_suffix = '-total';
+sorted = true;
+results_suffix = '-final';
 mea_rate = 20000; % Hz
 mea_channels = [1:126 129:254];
+plot_idx = 1:10;
 
 % Plots Params
 tBin = 0.05;% s
@@ -88,7 +89,8 @@ if any(checker_index)
     
     % Test Checkerboard
     figure
-    plotRaster(1:10, SpikeTimes, rep_begin, rep_end, mea_rate);
+    n_steps = mean(rep_end - rep_begin);
+    plotCellsRaster(SpikeTimes(plot_idx), rep_begin, n_steps, mea_rate);
     suptitle("CheckerBoard Raster")
 end
 
@@ -117,7 +119,8 @@ if any(euler_index)
     suptitle("Euler Smooth PSTH")
     
     figure
-    plotRaster(1:10, SpikeTimes, rep_begin, rep_end, mea_rate);
+    n_steps = mean(rep_end - rep_begin);
+    plotCellsRaster(SpikeTimes(plot_idx), rep_begin, n_steps, mea_rate);
     suptitle("Euler Raster")
 end
 

@@ -72,10 +72,11 @@ for i_exp = 1:numel(experiments)
     indices_tags = find(Tags>=accepted_labels).';
     indices_psth = getValidIndicesPSTH(psth_chunk);
     
+    bad_tags = numel(SpikeTimes) - numel(indices_tags);
     bad_stas = numel(SpikeTimes) - numel(indices_sta);
     bad_psths = numel(SpikeTimes) - numel(indices_psth);
     
-    fprintf('\t%i/%i cells excluded according to TAGS\n', numel(SpikeTimes)-indices_tags, numel(SpikeTimes))
+    fprintf('\t%i/%i cells excluded according to TAGS\n', bad_tags, numel(SpikeTimes))
     if bad_stas > 0 
         fprintf('\t%i/%i cells excluded for bad STA\n', bad_stas, numel(SpikeTimes))
     end

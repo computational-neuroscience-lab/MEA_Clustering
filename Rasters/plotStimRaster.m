@@ -4,9 +4,12 @@ function plotStimRaster(spikes, repetitions, n_steps_stim, rate, varargin)
 
 n_patterns = numel(repetitions);
 
+
 % Default Parameters
 onset_default = 0;
 offset_default = 0;
+bins_onset_default = 0;
+bins_offset_default = 0;
 labels_default = [];
 dead_times_default = {};
 pattern_indices_default = 1:n_patterns;
@@ -26,6 +29,8 @@ addRequired(p, 'n_steps_stim');
 addRequired(p, 'rate');
 addParameter(p, 'Response_Offset_Seconds', offset_default);
 addParameter(p, 'Response_Onset_Seconds', onset_default);
+addParameter(p, 'Bins_Offset_Seconds', bins_offset_default);
+addParameter(p, 'Bins_Onset_Seconds', bins_onset_default);
 addParameter(p, 'Labels', labels_default);
 addParameter(p, 'Dead_Times', dead_times_default);
 addParameter(p, 'Pattern_Indices', pattern_indices_default);
@@ -41,6 +46,8 @@ parse(p, spikes, repetitions, n_steps_stim, rate, varargin{:});
 
 onset_seconds = p.Results.Response_Onset_Seconds; 
 offset_seconds = p.Results.Response_Offset_Seconds; 
+bins_onset_seconds = p.Results.Bins_Onset_Seconds; 
+bins_offset_seconds = p.Results.Bins_Offset_Seconds; 
 labels = p.Results.Labels; 
 dead_times = p.Results.Dead_Times; 
 pattern_idx = p.Results.Pattern_Indices; 
@@ -75,7 +82,7 @@ ylim([-line_spacing, n_tot_repetitions])
 hold on
 set(gca,'ytick',[])
 xlabel("Spike Times (s)")
-ylabel("Patterns")
+% ylabel("Patterns (with spot intensities)")
 
 % add a stripe o spike trains for each pattern
 i_row = 0;
@@ -83,7 +90,7 @@ y_ticks = [];
 
 for i_pattern = pattern_idx
     rs_init = repetitions{i_pattern};
-    rs_end = repetitions{i_pattern} + n_steps_resp;
+    rs_end = repetitions{i_pattern} + n_steps_stim;
     color = raster_colors(i_pattern, :);
     
     rect_edges = [0, i_row-1, n_steps_stim/rate, n_max_repetitions+1];
@@ -118,6 +125,6 @@ yticklabels(labels);
 title(title_txt, 'Interpreter', 'None')
 
 % add window
-xline(0, 'LineWidth', 1.5, 'Color', 'red');
-xline(stim_duration, 'LineWidth', 1.5, 'Color', 'red');
+xline(bins_onset_seconds, 'LineWidth', 1.5, 'Color', 'red');
+xline(bins_offset_seconds, 'LineWidth', 1.5, 'Color', 'red');
 

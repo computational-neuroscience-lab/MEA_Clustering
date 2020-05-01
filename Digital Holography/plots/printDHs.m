@@ -1,15 +1,15 @@
 close all
 clear
 
-model = 'LNP';
-session_label = 'DHMulti';
-
+% model = 'LNP';
+% session_label = 'DHMulti';
+% plotDHRasterCustom(i_cell)
 load(getDatasetMat, 'cellsTable');
-s = load(getDatasetMat, session_label);
+% s = load(getDatasetMat, session_label);
 exp_id = getExpId();
 
 % idx_cells = find(s.(session_label).activation > 0.6)';
-idx_cells = 120:numel(cellsTable);
+idx_cells = 1:numel(cellsTable);
 path = [dataPath '/' exp_id '/processed/DH'];
 
 if ~exist([path '/Plots'], 'dir')
@@ -17,6 +17,7 @@ if ~exist([path '/Plots'], 'dir')
 end
 
 for i_cell = idx_cells
+    plotDHRasterCustom(i_cell)
     
 %     plotCellCard(i_cell);
 %     saveas(gcf, [tmpPath '/' session_label '_cell_full' num2str(i_cell)], 'jpg');
@@ -31,10 +32,10 @@ for i_cell = idx_cells
 %     saveas(gcf, [path '/Plots/' session_label num2str(i_cell) '_Predictions'],'jpg');
 %     close;
 %     
-    plotDHRasterSingleAndTest(i_cell, session_label);
-    saveas(gcf, [tmpPath '/' session_label '_raster_full'  num2str(i_cell)], 'jpg');
-    movefile([tmpPath '/' session_label '_raster_full'  num2str(i_cell) '.jpg'], [path '/Plots'])
-    close;
+%     plotDHRasterSingleAndTest(i_cell, session_label);
+%     saveas(gcf, [tmpPath '/' session_label '_raster_full'  num2str(i_cell)], 'jpg');
+%     movefile([tmpPath '/' session_label '_raster_full'  num2str(i_cell) '.jpg'], [path '/Plots'])
+%     close;
     
 %     plotDHFiringRates(i_cell, 'DHSingle')
 %     saveas(gcf, [tmpPath '/' session_label '_firing_rates_full'  num2str(i_cell)], 'jpg');

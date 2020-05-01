@@ -1,11 +1,9 @@
-function [accuracy, rmses, prediction, firingRates] = getDHLNPAccuracies(session_label, model, i_cell)
+function [accuracy, rmses, prediction, firingRates] = getDHLNPAccuracies(dh_session, model, i_cell)
 
-dh_session_struct = load(getDatasetMat, session_label);
-
-accuracy = dh_session_struct.(session_label).(model).accuracies;
-rmses = dh_session_struct.(session_label).(model).rmses;
-prediction = dh_session_struct.(session_label).(model).predictions;
-firingRates = dh_session_struct.(session_label).(model).firingRates;
+accuracy = dh_session.(model).accuracies;
+rmses = dh_session.(model).rmses;
+prediction = dh_session.(model).predictions;
+firingRates = dh_session.(model).firingRates;
 
 if exist('i_cell', 'var')
     accuracy = accuracy(i_cell);

@@ -1,5 +1,5 @@
 try
     load(getDatasetMat());
 catch
-    fprintf("ERROR: dataset is empty")
+    fprintf("ERROR: dataset is empty\n")
 end

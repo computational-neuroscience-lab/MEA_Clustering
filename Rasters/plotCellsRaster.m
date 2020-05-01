@@ -5,8 +5,10 @@ function plotCellsRaster(spikes, repetitions, n_steps_stim, rate, varargin)
 n_cells = numel(spikes);
 
 % Default Parameters
-onset_default = 0;
-offset_default = 0;
+onset_default = 0.5;
+offset_default = 0.5;
+bins_onset_default = [];
+bins_offset_default = [];
 labels_default = [];
 dead_times_default = {};
 cells_indices_default = 1:n_cells;
@@ -25,6 +27,8 @@ addRequired(p, 'n_steps_stim');
 addRequired(p, 'rate');
 addParameter(p, 'Response_Offset_Seconds', offset_default);
 addParameter(p, 'Response_Onset_Seconds', onset_default);
+addParameter(p, 'Bins_Offset_Seconds', bins_offset_default);
+addParameter(p, 'Bins_Onset_Seconds', bins_onset_default);
 addParameter(p, 'Labels', labels_default);
 addParameter(p, 'Dead_Times', dead_times_default);
 addParameter(p, 'Cells_Indices', cells_indices_default);
@@ -39,6 +43,8 @@ parse(p, spikes, repetitions, n_steps_stim, rate, varargin{:});
 
 onset_seconds = p.Results.Response_Onset_Seconds; 
 offset_seconds = p.Results.Response_Offset_Seconds; 
+bins_onset_seconds = p.Results.Bins_Onset_Seconds; 
+bins_offset_seconds = p.Results.Bins_Offset_Seconds; 
 labels = p.Results.Labels; 
 dead_times = p.Results.Dead_Times; 
 cells_idx = p.Results.Cells_Indices; 
@@ -99,7 +105,7 @@ for i_cell = cells_idx
         i_row = i_row + 1;
         
         spikes_segment = and(spikes_cell > rs_init(r) + onset_resp, spikes_cell < rs_end(r) + offset_resp);
-        spikes_rep = spikes_cell(spikes_segment) - rs_init(r);
+        spikes_rep = spikes_cell(spikes_segment) - rs_init(r) ;
         spikes_rep = spikes_rep(:).';
         y_spikes_rep = ones(1, length(spikes_rep)) * i_row;
         scatter(spikes_rep / rate, y_spikes_rep, point_size, color, 'Filled', 'o')
@@ -112,6 +118,9 @@ yticklabels(cells_idx);
 title(title_txt, 'Interpreter', 'None')
 
 % add window
-xline(0, 'LineWidth', 1.5, 'Color', 'red');
-xline(stim_duration, 'LineWidth', 1.5, 'Color', 'red');
+if ~(isempty(bins_onset_seconds) || isempty(bins_onset_seconds))
+    xline(bins_onset_seconds, 'LineWidth', 1.5, 'Color', 'red');
+    xline(bins_offset_seconds, 'LineWidth', 1.5, 'Color', 'red');
+end
+
 

@@ -10,7 +10,7 @@ n_cells = numel(stas);
 temporal = zeros(n_cells, n_steps);
 spatial = zeros(n_cells, n_rows, n_cols);
 rfs(n_cells) = polyshape();
-is_good_sta = boolean(zeros(n_cells, 1));
+is_good_sta = false(n_cells, 1);
 
 
 for i=1:length(stas)
@@ -32,7 +32,7 @@ for i=1:length(stas)
         
         
         if is_valid
-            is_good_sta(i) = is_valid;
+            is_good_sta(i) = true;
             temporal(i, :) = extractTemporalSta(sta, xEll, yEll);
             rfs(i) = polyshape(xEll, yEll);
         end

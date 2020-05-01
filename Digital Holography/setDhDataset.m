@@ -1,9 +1,9 @@
 clear
 
 % dataset parameters
-changeDataset('20200131_dh')
-session_label = 'DHSingle';    % label of the dataset that will be generated
-reps_label = 'DHSingle';         % label of the session from which to get the repetitions
+changeDataset('20200109_a2')
+session_label = 'DH_DMD_smallbin';    % label of the dataset that will be generated
+reps_label = 'DH_DMD';         % label of the session from which to get the repetitions
 trigger_suffix = '_begin_time';     % '_begin_time' or '_end_time'
 
 dissipation_func = @getDHFrameIntensities;
@@ -15,9 +15,9 @@ dh_dataset.params.reps_label = reps_label;
 dh_dataset.params.t_label = trigger_suffix;
 
 dh_dataset.params.stim_dt = 0.5;            % s
-dh_dataset.params.response_init = 0;     % s
-dh_dataset.params.response_dt = 0.5;        % s
-dh_dataset.params.response_tbin = 0.5;    % s
+dh_dataset.params.response_init = 0.175;     % s
+dh_dataset.params.response_dt = 0.325;        % s
+dh_dataset.params.response_tbin = 0.325;    % s
 
 % Load Data
 load(getDatasetMat(), 'spikes');
@@ -60,7 +60,7 @@ for i_data = 1:numel(datasets)
     rep_frames = s.(frames_label);
 
     % Compute input intensities
-    dh_dataset.stimuli.(dataset_label) = dissipation_func(session_label, rep_frames);
+    dh_dataset.stimuli.(dataset_label) = dissipation_func(dh_dataset, rep_frames);
     dh_dataset.repetitions.(dataset_label) = repetitions';
 
     % Compute all the responses for each pattern

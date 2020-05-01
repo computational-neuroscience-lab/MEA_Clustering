@@ -35,4 +35,4 @@ else
     snr_string = string(snr);
 end
 
-title(strcat("Mean Trace (SNR = ", snr_string, ")"))
+title(strcat("Mean Euler PSTH (SNR = ", snr_string, ")"))

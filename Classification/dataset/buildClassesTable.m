@@ -7,7 +7,6 @@ nClasses = length(classNames);
 
 classesTable = struct(  'name',     cell(1, nClasses), ...
                         'size',     cell(1, nClasses), ...
-                        'SNR',  cell(1, nClasses), ...
                         'indices',  cell(1, nClasses) ...
                      );
 for iClass = 1:numel(classNames)
@@ -26,9 +25,8 @@ for iClass = 1:numel(classNames)
         classesTable(iClass).POLARITY = "OFF";
     end
 
-
-    classesTable(iClass).STD = std(mean(psths(indices, :)));
-    classesTable(iClass).SNR = doSNR(psths(indices, :));
+    classesTable(iClass).SNR_PSTH = doSNR(psths(indices, :));
+    classesTable(iClass).SNR_STA = doSNR(temporalSTAs(indices, :));
     classesTable(iClass).indices = indices;
 end
 

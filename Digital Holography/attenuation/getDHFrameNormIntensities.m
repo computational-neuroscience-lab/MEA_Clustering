@@ -1,8 +1,8 @@
-function frames_intensities = getDHFrameNormIntensities(session, patterns)
+function frames_intensities = getDHFrameNormIntensities(dh_session, patterns)
 
 n_frames = size(patterns, 1);
 n_spots = size(patterns, 2);
-spots_coords = getDHSpotsPositions(session);
+spots_coords = getDHSpotsPositions(dh_session);
 
 frames_intensities = zeros(n_frames, n_spots);
 for i_pattern = 1:n_frames

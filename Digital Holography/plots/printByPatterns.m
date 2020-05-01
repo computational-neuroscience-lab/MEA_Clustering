@@ -1,5 +1,7 @@
-for i = 1:36
-    plotDHRaster_by_pattern(i, 'DHSingle', 'single')
-    saveas(gcf, [tmpPath '/DHSingle_raster_pattern'  num2str(i_cell)], 'jpg');
+idx_patterns = 1:36;
+
+for i_p = idx_patterns
+    plotDHRaster_by_pattern(i_p, 'DHSingle', 'single')
+    export_fig([plotsPath() '/' getDatasetId() '/' 'DHSingle_rasters_pattern#' num2str(i_p)], '-svg')
     close;
 end
