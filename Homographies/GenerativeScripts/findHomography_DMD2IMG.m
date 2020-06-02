@@ -9,10 +9,12 @@ camera_img = imread(image_path);
 load(getDatasetMat, "stas");
 [dmd_height, dmd_width, ~] = size(stas{1});
 
-DMD_PxlSize = 50; 
 Camera_PxlSize = 0.64;
+DMD_PxlSize = 2.5;
+Checkerboard_PxlsPerSquare = 20;
+Square_PxlSize = DMD_PxlSize * Checkerboard_PxlsPerSquare;
 
-s = DMD_PxlSize/Camera_PxlSize;
+s = Square_PxlSize/Camera_PxlSize;
 r = pi/2;
 
 H1 = [1, 0, -dmd_width/2; ...

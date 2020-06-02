@@ -2,8 +2,8 @@ clear
 
 % dataset parameters
 changeDataset('20200109_a2')
-session_label = 'DH_DMD_smallbin';    % label of the dataset that will be generated
-reps_label = 'DH_DMD';         % label of the session from which to get the repetitions
+session_label = 'DMD_delayedbin';    % label of the dataset that will be generated
+reps_label = 'DMD';         % label of the session from which to get the repetitions
 trigger_suffix = '_begin_time';     % '_begin_time' or '_end_time'
 
 dissipation_func = @getDHFrameIntensities;
@@ -15,7 +15,7 @@ dh_dataset.params.reps_label = reps_label;
 dh_dataset.params.t_label = trigger_suffix;
 
 dh_dataset.params.stim_dt = 0.5;            % s
-dh_dataset.params.response_init = 0.175;     % s
+dh_dataset.params.response_init = 0.5;     % s
 dh_dataset.params.response_dt = 0.325;        % s
 dh_dataset.params.response_tbin = 0.325;    % s
 

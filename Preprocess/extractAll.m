@@ -1,6 +1,6 @@
 
 % Parameters
-exp_id = '20200109_a2';
+exp_id = '20180705_discs';
 sorted = true;
 results_suffix = '-final';
 mea_rate = 20000; % Hz

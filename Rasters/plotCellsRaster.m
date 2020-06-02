@@ -70,7 +70,7 @@ n_repetitions = numel(repetitions);
 n_tot_repetitions = column_size * (n_repetitions + line_spacing);
 
 % build figure with background rectangle representing holo stimulation
-xlim([min(0, onset_seconds), max(stim_duration, response_duration)])
+xlim([min(0, onset_seconds), max(stim_duration, onset_seconds+response_duration+offset_seconds)])
 ylim([-line_spacing, n_tot_repetitions])
 
 hold on
@@ -105,7 +105,7 @@ for i_cell = cells_idx
         i_row = i_row + 1;
         
         spikes_segment = and(spikes_cell > rs_init(r) + onset_resp, spikes_cell < rs_end(r) + offset_resp);
-        spikes_rep = spikes_cell(spikes_segment) - rs_init(r) ;
+        spikes_rep = spikes_cell(spikes_segment) - rs_init(r);
         spikes_rep = spikes_rep(:).';
         y_spikes_rep = ones(1, length(spikes_rep)) * i_row;
         scatter(spikes_rep / rate, y_spikes_rep, point_size, color, 'Filled', 'o')

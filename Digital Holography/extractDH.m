@@ -2,9 +2,9 @@
 % Pool the repetitions and combine them in an unique set of triggers.
 
 % PARAMS
-exp_id = '20200109_a2';
-dh_sessions = 6;
-dh_reps_label = 'DH_DMD_BLOCK';
+exp_id = '20180705_discs';
+dh_sessions = 1;
+dh_reps_label = 'DH';
 combine_as = 'STACK';  % CONCAT or STACK
 
 if strcmp(combine_as, 'CONCAT')
@@ -63,7 +63,7 @@ coords_mea = cell(numel(dh_sessions), 1);
 for i_n = 1:numel(dh_sessions)
     i_dht = dh_sessions(i_n);
     
-    try
+%     try
         % get the repetitions from different fields of view
         fprintf('Triggers set #%i:\n', i_dht);
         frames_file = [dh_folder '/DHFrames_' num2str(i_dht) '.mat'];
@@ -86,10 +86,10 @@ for i_n = 1:numel(dh_sessions)
         coords_mea{i_n} = transformPointsV(h_img2mea, PatternImage);
 
         fprintf('\tDH repetitions generated\n\n');
-    catch e
-        fprintf('\tnot possible to generate the DH repetitions:\n');
-        fprintf('\t%s: %s\n', e.identifier, e.message);
-    end
+%     catch e
+%         fprintf('\tnot possible to generate the DH repetitions:\n');
+%         fprintf('\t%s: %s\n', e.identifier, e.message);
+%     end
 end
 
 % combine patterns
