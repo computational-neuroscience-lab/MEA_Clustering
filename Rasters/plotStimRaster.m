@@ -8,8 +8,8 @@ n_patterns = numel(repetitions);
 % Default Parameters
 onset_default = 0;
 offset_default = 0;
-bins_onset_default = 0;
-bins_offset_default = 0;
+edges_onset_default = 0;
+edges_offset_default = 0;
 labels_default = [];
 dead_times_default = {};
 pattern_indices_default = 1:n_patterns;
@@ -29,8 +29,8 @@ addRequired(p, 'n_steps_stim');
 addRequired(p, 'rate');
 addParameter(p, 'Response_Offset_Seconds', offset_default);
 addParameter(p, 'Response_Onset_Seconds', onset_default);
-addParameter(p, 'Bins_Offset_Seconds', bins_offset_default);
-addParameter(p, 'Bins_Onset_Seconds', bins_onset_default);
+addParameter(p, 'Edges_Offset_Seconds', edges_offset_default);
+addParameter(p, 'Edges_Onset_Seconds', edges_onset_default);
 addParameter(p, 'Labels', labels_default);
 addParameter(p, 'Dead_Times', dead_times_default);
 addParameter(p, 'Pattern_Indices', pattern_indices_default);
@@ -46,8 +46,8 @@ parse(p, spikes, repetitions, n_steps_stim, rate, varargin{:});
 
 onset_seconds = p.Results.Response_Onset_Seconds; 
 offset_seconds = p.Results.Response_Offset_Seconds; 
-bins_onset_seconds = p.Results.Bins_Onset_Seconds; 
-bins_offset_seconds = p.Results.Bins_Offset_Seconds; 
+edges_onset_seconds = p.Results.Edges_Onset_Seconds; 
+edges_offset_seconds = p.Results.Edges_Offset_Seconds; 
 labels = p.Results.Labels; 
 dead_times = p.Results.Dead_Times; 
 pattern_idx = p.Results.Pattern_Indices; 
@@ -125,6 +125,11 @@ yticklabels(labels);
 title(title_txt, 'Interpreter', 'None')
 
 % add window
-xline(bins_onset_seconds, 'LineWidth', 1.5, 'Color', 'red');
-xline(bins_offset_seconds, 'LineWidth', 1.5, 'Color', 'red');
+if ~(isempty(edges_onset_seconds) || isempty(edges_onset_seconds))
+    colors_edges = getColors(numel(edges_onset_seconds));
+    for i_b = 1:numel(edges_onset_seconds)
+        xline(edges_onset_seconds(i_b), 'LineWidth', 1.5, 'Color', colors_edges(i_b, :));
+        xline(edges_offset_seconds(i_b), 'LineWidth', 1.5, 'Color', colors_edges(i_b, :));
+    end
+end
 

@@ -65,6 +65,9 @@ nbTotalFrames = (NbPositionsX100*NbPositionsY100+NbPositionsX300*NbPositionsY300
 
 TotalDuration = (NbPositionsX100*NbPositionsY100+NbPositionsX300*NbPositionsY300+NbPositionsX600*NbPositionsY600) ...
     * (DurationON+DurationBlackSpot+DurationON+DurationOFF)*NbRepeats
+
+frames = zeros(TotalX, TotalY, nbTotalFrames); 
+frame_ids = strings(nbTotalFrames, 1);
  
 %% generate the frames and save in bin file
 
@@ -99,14 +102,17 @@ for ilum=1:length(PossibleLums)
 
                 Frame = BackgroundLum*ones(size(EqRadius2));
                 Frame(find(EqRadius2(:) <= (Diam100/(2*PixelSizeInMicrons))^2 )) = PossibleLums(ilum);
-                imagesc(Frame);
-                pause;
+%                 imagesc(Frame);
+%                 pause;
+                
+                FrameId(ilum,idiam,iCenterX,iCenterY) = ilum*1000 +idiam*100+iCenterX*10+iCenterY;
                 Frame = uint8(Frame);
-
                 fwrite(fid,Frame,'uint8');% Ecriture de la frame  
+                
+                frames(:, :, FrameCount) = Frame;
+                frame_ids(FrameCount) = string(ilum*1000 +idiam*100+iCenterX*10+iCenterY);
 
                 FrameCount = FrameCount + 1;
-                FrameId(ilum,idiam,iCenterX,iCenterY) = ilum*1000 +idiam*100+iCenterX*10+iCenterY;
             end
 %             FrameEnd(ilum,idiam,iCenterX,iCenterY) = FrameCount - 1;
             
@@ -129,12 +135,15 @@ for ilum=1:length(PossibleLums)
                 Frame(find(EqRadius2(:) <= (Diam300/(2*PixelSizeInMicrons))^2 )) = PossibleLums(ilum);
 %                 imagesc(Frame);
 %                 pause;
-                Frame = uint8(Frame);
 
+                FrameId(ilum,idiam,iCenterX,iCenterY) = ilum*1000 +idiam*100+iCenterX*10+iCenterY;
+                Frame = uint8(Frame);
                 fwrite(fid,Frame,'uint8');% Ecriture de la frame  
+                
+                frames(:, :, FrameCount) = Frame;
+                frame_ids(FrameCount) = string(ilum*1000 +idiam*100+iCenterX*10+iCenterY);
 
                 FrameCount = FrameCount + 1;
-                FrameId(ilum,idiam,iCenterX,iCenterY) = ilum*1000 +idiam*100+iCenterX*10+iCenterY;
             end
 %             FrameEnd(ilum,idiam,iCenterX,iCenterY) = FrameCount - 1;
             
@@ -158,12 +167,15 @@ for ilum=1:length(PossibleLums)
                 Frame(find(EqRadius2(:) <= (Diam600/(2*PixelSizeInMicrons))^2 )) = PossibleLums(ilum);
 %                 imagesc(Frame);
 %                 pause;
-                Frame = uint8(Frame);
 
+                FrameId(ilum,idiam,iCenterX,iCenterY) = ilum*1000 +idiam*100+iCenterX*10+iCenterY;
+                Frame = uint8(Frame);
                 fwrite(fid,Frame,'uint8');% Ecriture de la frame  
+                
+                frames(:, :, FrameCount) = Frame;
+                frame_ids(FrameCount) = string(ilum*1000 +idiam*100+iCenterX*10+iCenterY);
 
                 FrameCount = FrameCount + 1;
-                FrameId(ilum,idiam,iCenterX,iCenterY) = ilum*1000 +idiam*100+iCenterX*10+iCenterY;
             end
 %             FrameEnd(ilum,idiam,iCenterX,iCenterY) = FrameCount - 1;
             
@@ -231,3 +243,4 @@ fclose(fid);
 
 
 save(['180704_PairedPulseBg_' int2str(BackgroundLum) '.mat'])
+save(['Frames_180704_PairedPulseBg_' int2str(BackgroundLum) '.mat'], 'frames', 'frame_ids');
