@@ -13,6 +13,7 @@ function setDataset(dataset_name, experiments, accepted_labels, mea_rate, psth_t
 % Experimental parameters
 params.meaRate = mea_rate; %Hz
 params.psth.tBin = psth_tBin; % s
+smooth_STAs = true;
     
 % Initialization
 indices_list = {};
@@ -59,11 +60,11 @@ for i_exp = 1:numel(experiments)
     bin_size = params.psth.tBin * params.meaRate;
     n_tBins = round(n_steps / bin_size);
     
-    [psth, ~, ~] = doPSTH(SpikeTimes, rep_begin, bin_size, n_tBins, params.meaRate, 1:numel(SpikeTimes));
-    [psth_chunk, ~] = extractEulerChunks(psth, 1/params.psth.tBin, euler, euler_sampler_rate);
+    [psth_chunk, ~, ~] = doPSTH(SpikeTimes, rep_begin, bin_size, n_tBins, params.meaRate, 1:numel(SpikeTimes));
+%     [psth_chunk, euler_chunk] = extractEulerChunks(psth_chunk, 1/params.psth.tBin, euler, euler_sampler_rate);
     
     disp('  STA')
-    [temporal_sta, spatial_sta, rfs, indices_sta] = decomposeSTA(STAs);
+    [temporal_sta, spatial_sta, rfs, indices_sta] = decomposeSTA(STAs, smooth_STAs);
     rf_areas = getRFArea(rfs);
     
     %----- VALIDATION ---------------------------%

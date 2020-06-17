@@ -12,7 +12,7 @@ if sum(indices>0)~=1
     background = ones(y_size, x_size)*255;
 else
     colors = [1,0,0];
-    background = std(stas{indices}, [], 3);
+    background = std(smoothSta(stas{indices}), [], 3);
     background = background - min(background(:));
     background = background / max(background(:)) * 255;
     colormap('summer');

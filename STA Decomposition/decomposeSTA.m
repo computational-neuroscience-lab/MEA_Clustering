@@ -1,7 +1,7 @@
 function [temporal, spatial, rfs, indices] = decomposeSTA(stas, doSmoothing)
 
 if ~exist('doSmoothing', 'var')
-    doSmoothing = true;
+    doSmoothing = false;
 end
 
 [n_rows, n_cols, n_steps] = size(stas{1});
@@ -25,6 +25,8 @@ for i=1:length(stas)
             spatial_sta = std(sta, [], 3);
         end
         spatial(i, :, :) = spatial_sta;
+%         imagesc(spatial_sta);
+%         waitforbuttonpress();
         
         % Fit The ellipses
         [xEll, yEll, ~, ~] =  fitEllipse(spatial_sta);

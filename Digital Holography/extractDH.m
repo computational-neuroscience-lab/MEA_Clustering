@@ -2,7 +2,7 @@
 % Pool the repetitions and combine them in an unique set of triggers.
 
 % PARAMS
-exp_id = '20180705_discs';
+exp_id = '20200109_a2';
 dh_sessions = 1;
 dh_reps_label = 'DH';
 combine_as = 'STACK';  % CONCAT or STACK
@@ -18,7 +18,7 @@ else
 end
 
 % paths
-raw_file_path = [dataPath() '/' exp_id '/sorted/CONVERTED.raw'];
+raw_file_path = [dataPath() '/' exp_id '/sorted/CONVERTED-NO-FILT.raw'];
 dh_folder = [dataPath() '/' exp_id '/processed/DH'];
 
 data_file = 'DHChannel_data.mat';
@@ -27,10 +27,10 @@ repetitions_file = ['DHRepetitions' dh_reps_label '.mat'];
 coords_file = ['DHCoords' dh_reps_label '.mat'];
 
 % Stim Triggers
-try
-    load([dh_folder '/' triggers_file], 'dhTimes')
-    fprintf("DHtTimes Loaded\n\n")
-catch
+% try
+%     load([dh_folder '/' triggers_file], 'dhTimes')
+%     fprintf("DHtTimes Loaded\n\n")
+% catch
     try
         load([dh_folder '/' data_file], 'DHChannel_data')
     catch
@@ -38,10 +38,10 @@ catch
         save([tmpPath '/' data_file], 'DHChannel_data', '-v7.3');
         movefile([tmpPath '/' data_file], dh_folder);
     end
-    dhTimes = extractDHTriggers(DHChannel_data, dh_dt_max);
+    dhTimes = extractDHTriggers(DHChannel_data);
     save([tmpPath '/' triggers_file], 'dhTimes')
     movefile([tmpPath '/' triggers_file], dh_folder);
-end
+% end
 
 % Repetitions
 % 

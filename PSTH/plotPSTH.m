@@ -1,6 +1,6 @@
 function snr = plotPSTH(indices, colors)
 
-load(getDatasetMat(), 'psths', 'params')
+load(getDatasetMat(), 'psths', 'params', 'cellsTable')
 tBin = params.psth.tBin;
 
 traces = psths(indices, :);
@@ -11,12 +11,18 @@ upSTD = avgTrace + stdTrace / 2;
 downSTD = avgTrace - stdTrace / 2;
 snr = doSNR(traces);
 
+stim_mat = [stimPath() '/Euler/Euler_Stim.mat'];
+load(stim_mat, 'euler', 'euler_sampler_rate');
+
+x_stim = cumsum(ones(1, length(euler)) / euler_sampler_rate);
+plot(x_stim, euler/max(euler), 'k')
+hold on
+
 % Plot Standard Deviation
 xs = cumsum(ones(1, length(avgTrace)) * tBin);
 x2 = [xs, fliplr(xs)];
 inBetween = [upSTD, fliplr(downSTD)];
 fill(x2, inBetween, [0.75, 0.75, 0.75]);
- hold on
  
 % Plot Mean
 if exist("colors", "var")

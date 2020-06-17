@@ -1,7 +1,7 @@
 function dh_triggers = extractDHTriggers(stimData, dt_threshold, evt_threshold, frame_rate)
 
 if ~exist('dt_threshold', 'var')
-    dt_threshold = 4; % seconds
+    dt_threshold = 10; % seconds
 end
 
 if ~exist('evt_threshold', 'var')

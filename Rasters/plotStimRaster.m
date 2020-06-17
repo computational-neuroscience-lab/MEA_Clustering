@@ -8,8 +8,8 @@ n_patterns = numel(repetitions);
 % Default Parameters
 onset_default = 0;
 offset_default = 0;
-edges_onset_default = 0;
-edges_offset_default = 0;
+edges_onset_default = [];
+edges_offset_default =  [];
 labels_default = [];
 dead_times_default = {};
 pattern_indices_default = 1:n_patterns;
