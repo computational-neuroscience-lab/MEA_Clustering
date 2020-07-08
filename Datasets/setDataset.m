@@ -23,6 +23,7 @@ temporalSTAs = [];
 spatialSTAs = [];
 stas = [];
 psths = [];
+grades = [];
 
 for i_exp = 1:numel(experiments)
     exp_id = char(experiments{i_exp});
@@ -40,7 +41,7 @@ for i_exp = 1:numel(experiments)
     %----- LOADs -------------------------------%
 
     load(repetitions_mat, "rep_begin", "rep_end")
-    load(stim_mat, "euler", "euler_sampler_rate")
+%     load(stim_mat, "euler", "euler_sampler_rate")
     load(spikes_mat, "SpikeTimes")
     load(sta_mat, "STAs")
     
@@ -98,11 +99,12 @@ for i_exp = 1:numel(experiments)
     stas = [stas, STAs(good_cells)];
     psths = [psths;  psth_chunk(good_cells, :)];
     spikes = [spikes, SpikeTimes(good_cells)];
+    grades = [grades, Tags(good_cells)];
     
     disp('')
 end
 
 createEmptyDataset(dataset_name)
-[cellsTable, tracesMat] = buildDatasetTable(experiments, indices_list, features_list);
+[cellsTable, tracesMat] = buildDatasetTable(experiments, indices_list, features_list, grades);
 save(getDatasetMat, 'cellsTable', 'tracesMat');
 save(getDatasetMat(), 'experiments', 'spikes', 'temporalSTAs', 'spatialSTAs', 'stas', 'psths', 'params', '-append')
